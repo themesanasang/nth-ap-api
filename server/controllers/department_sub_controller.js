@@ -167,8 +167,7 @@ const updateDepartmentSub = async (req, res) => {
             let status = 'N';
             
             await DepartmentSub.update(department_sub_id, {
-                status, 
-                updated_at
+                status
             });
         } else {
             await DepartmentSub.destroy(department_sub_id);

@@ -163,8 +163,7 @@ const updateDepartment = async (req, res) => {
             let status = 'N';
             
             await Department.update(department_id, {
-                status, 
-                updated_at
+                status
             });
         } else {
             await Department.destroy(department_id);

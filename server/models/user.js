@@ -50,7 +50,7 @@ module.exports = knex => {
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
     .from(tableName)
-    .orderBy('date_create', 'ASC')
+    .orderBy('created_at', 'ASC')
     .timeout(timeout)
 
     const findOne = (uuid) => knex.select(
