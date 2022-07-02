@@ -60,7 +60,7 @@ const getDepartmentAll = async (req, res) => {
         let data = await Department.findAll();
 
         if (!data) {
-        return errorResponse(res, 404, 'Department_04', 'Department does not exist.');
+            return errorResponse(res, 404, 'Department_04', 'Department does not exist.');
         }
 
         return res.status(200).json(data);
@@ -84,13 +84,13 @@ const getDepartment = async (req, res) => {
         let department_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!department_id) {
-        errorResponse(res, 400, 'department_01', 'id is required', 'id');
+            return errorResponse(res, 400, 'department_01', 'id is required', 'id');
         }
 
         let data = await Department.findOne(department_id);
 
         if (data == '') {
-        return errorResponse(res, 404, 'department_04', 'department does not exist.');
+            return errorResponse(res, 404, 'department_04', 'department does not exist.');
         }
 
         return res.status(200).json(data);
@@ -139,38 +139,6 @@ const updateDepartment = async (req, res) => {
 
 
 /**
-  * @description -This method updates a Department
-  * @param {object} req - The request payload
-  * @param {object} res - The response payload
-  * @returns {object} - Department
-  */
- const disableDepartment = async (req, res) => {
-  try {
-        const { id } = req.params;
-
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
-        let department_id = bytes.toString(CryptoJS.enc.Utf8);
-
-        let existingDepartment =  await Department.countByID(department_id);
-
-        if (existingDepartment['numrow'] == 0) {
-        return errorResponse(res, 404, 'Department_04', 'Department does not exist.'); 
-        }  
-
-        let status = 'N';
-
-        let data = await Department.update(department_id, {
-            status
-        });
-
-        return res.status(200).json(data); 
-  } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
-  }
-}
-
-
-/**
   * @description -This method removes Department
   * @param {object} req - The request payload sent from the router
   * @param {object} res - The response payload sent Department from the controller
@@ -186,20 +154,20 @@ const updateDepartment = async (req, res) => {
         let existingDepartment =  await Department.countByID(department_id);
 
         if (existingDepartment['numrow'] == 0) {
-        return errorResponse(res, 404, 'Department_01', 'No Department found', 'id'); 
+            return errorResponse(res, 404, 'Department_01', 'No Department found', 'id'); 
         }  
 
         let countWork = await Department.countWork(department_id);
 
         if (countWork['numrow'] > 0) {
-        let status = 'N';
-        
-        await Department.update(department_id, {
-            status, 
-            updated_at
-        });
+            let status = 'N';
+            
+            await Department.update(department_id, {
+                status, 
+                updated_at
+            });
         } else {
-        await Department.destroy(department_id);
+            await Department.destroy(department_id);
         }
 
         return res.status(204).json();
@@ -214,6 +182,5 @@ module.exports = {
     getDepartmentAll,
     getDepartment,
     updateDepartment,
-    disableDepartment,
     deleteDepartment
 } 

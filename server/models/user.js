@@ -45,21 +45,21 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'ap_user.uuid', 'ap_user.username', 'ap_user.fullname', 'ap_user.level', 'ap_user.status'
-        , knex.raw('CONCAT(DATE_FORMAT(ap_user.created_at, "%d-%m-"),DATE_FORMAT(ap_user.created_at, "%Y")+543) AS date_create') 
-        , knex.raw('CONCAT(DATE_FORMAT(ap_user.updated_at, "%d-%m-"),DATE_FORMAT(ap_user.updated_at, "%Y")+543) AS date_update') 
+        'uuid', 'username', 'fullname', 'level', 'status'
+        , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
+        , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
     .from(tableName)
-    .orderBy('ap_user.date_create', 'ASC')
+    .orderBy('date_create', 'ASC')
     .timeout(timeout)
 
     const findOne = (uuid) => knex.select(
-        'ap_user.uuid', 'ap_user.username', 'ap_user.fullname', 'ap_user.facebook_id', 'ap_user.email', 'ap_user.line_id', 'ap_user.level', 'ap_user.status'
-        , knex.raw('CONCAT(DATE_FORMAT(ap_user.created_at, "%d-%m-"),DATE_FORMAT(ap_user.created_at, "%Y")+543) AS date_create') 
-        , knex.raw('CONCAT(DATE_FORMAT(ap_user.updated_at, "%d-%m-"),DATE_FORMAT(ap_user.updated_at, "%Y")+543) AS date_update') 
+        'uuid', 'username', 'fullname', 'facebook_id', 'email', 'line_id', 'level', 'status'
+        , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
+        , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
     .from(tableName)
-    .whereRaw('ap_user.uuid = ?', [uuid])
+    .whereRaw('uuid = ?', [uuid])
     .timeout(timeout)
 
     const countWork = (uuid) => knex.count('uuid as numrow')

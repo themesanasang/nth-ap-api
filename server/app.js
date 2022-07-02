@@ -33,6 +33,7 @@ app.get('/', function (req, res) {
 app.use('/', [
   require('./routes/user_routes'),
   require('./routes/department_routes'),
+  require('./routes/department_sub_routes'),
 ])
 
 module.exports = app
