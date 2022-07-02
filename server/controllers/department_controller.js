@@ -17,7 +17,7 @@ let {
   * @returns {object} - departmen code
   */
 const postDepartment = async (req, res) => {
-    let { 
+    const { 
         departmen_code,
         departmen_name,
         status
@@ -57,7 +57,7 @@ const postDepartment = async (req, res) => {
   */
 const getDepartmentAll = async (req, res) => {
     try {
-        const data = await Department.findAll();
+        let data = await Department.findAll();
 
         if (!data) {
         return errorResponse(res, 404, 'Department_04', 'Department does not exist.');
@@ -87,7 +87,7 @@ const getDepartment = async (req, res) => {
         errorResponse(res, 400, 'department_01', 'id is required', 'id');
         }
 
-        const data = await Department.findOne(department_id);
+        let data = await Department.findOne(department_id);
 
         if (data == '') {
         return errorResponse(res, 404, 'department_04', 'department does not exist.');

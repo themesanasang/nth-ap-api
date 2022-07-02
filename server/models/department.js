@@ -1,8 +1,8 @@
 'use strict'
 
-let name = 'Department'
-let tableName = 'ap_department'
-let timeout = 1000
+const name = 'Department'
+const tableName = 'ap_department'
+const timeout = 1000
 
 module.exports = knex => {
 

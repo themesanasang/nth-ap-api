@@ -21,15 +21,15 @@ let {
   * @param {object} res - The response payload sent back from the method
   * @returns {object} - user and accessToken
   */
- const loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
 
         let bytes = CryptoJS.AES.decrypt(password, process.env.SECRET_KEY);
         let password_post = bytes.toString(CryptoJS.enc.Utf8);
 
-        const dataUser = await User.findByUsername(username);
-        const match = await comparePasswords(password_post, dataUser[0].password);
+        let dataUser = await User.findByUsername(username);
+        let match = await comparePasswords(password_post, dataUser[0].password);
         
         if (match) {
             let user = dataUser[0];
@@ -55,7 +55,7 @@ let {
   * @returns {object} - uuid
   */
 const postUser = async (req, res) => {
-    let { 
+    const { 
         username,
         password,
         fullname
@@ -97,7 +97,7 @@ const postUser = async (req, res) => {
   */
 const getUserAll = async (req, res) => {
     try {
-      const data = await User.findAll();
+      let data = await User.findAll();
 
       if (!data) {
         return errorResponse(res, 404, 'user_04', 'user does not exist.');
@@ -127,7 +127,7 @@ const getUser = async (req, res) => {
         errorResponse(res, 400, 'user_01', 'id is required', 'id');
       }
 
-      const data = await User.findOne(uuid);
+      let data = await User.findOne(uuid);
   
       if (data == '') {
         return errorResponse(res, 404, 'user_04', 'user does not exist.');
@@ -191,7 +191,7 @@ const updateUser = async (req, res) => {
   * @param {object} res - The response payload
   * @returns {object} - User
   */
- const disableUser = async (req, res) => {
+const disableUser = async (req, res) => {
   try {
       const { id } = req.params;
 
@@ -225,7 +225,7 @@ const updateUser = async (req, res) => {
   * @param {object} res - The response payload sent user from the controller
   * @returns {array} - removes user
   */
- const deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
     try {
       const { id } = req.params;
   
