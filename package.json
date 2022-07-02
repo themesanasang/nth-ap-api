@@ -2,7 +2,7 @@
   "name": "nth-ap-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./server/start.js",
   "scripts": {
     "start": "nodemon ./server/start.js --exec babel-node --presets env",
     "test": "echo \"Error: no test specified\" && exit 1"

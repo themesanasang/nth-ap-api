@@ -33,7 +33,7 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
-    const findByUsername = (username) => knex.select('*')
+    const findByUsername = (username) => knex.select('uuid', 'username', 'password')
     .from(tableName)
     .whereRaw('username = ?', [username])
     .timeout(timeout)

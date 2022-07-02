@@ -32,13 +32,11 @@ let {
         const match = await comparePasswords(password_post, dataUser[0].password);
         
         if (match) {
-            const user = dataUser[0];
-            const token = createToken(user);
+            let user = dataUser[0];
+            let token = createToken(user);
             
             res.status(200).json({
-                user,
-                token: token,
-                expires_in: process.env.JWT_EXPIRATION
+                token: token
             });
             
         } else {
