@@ -1,7 +1,7 @@
 'use strict'
 
-const name = 'Account'
-const tableName = 'ap_account'
+const name = 'Payable'
+const tableName = 'ap_payable'
 const timeout = 1000
 
 module.exports = knex => {
@@ -12,65 +12,58 @@ module.exports = knex => {
         .timeout(timeout)
     }
 
-    const countByID = (account_id) => knex.count('account_id AS numrow')
+    const countByID = (payable_id) => knex.count('payable_id AS numrow')
     .from(tableName)
-    .whereRaw('account_id = ?', [account_id])
+    .whereRaw('payable_id = ?', [payable_id])
     .first()
     .timeout(timeout)
 
-    const countByCode = (account) => knex.count('account AS numrow')
+    const countByName = (name) => knex.count('name AS numrow')
     .from(tableName)
-    .whereRaw('account = ?', [account])
-    .first()
-    .timeout(timeout)
-
-    const countByName = (account_name) => knex.count('account_name AS numrow')
-    .from(tableName)
-    .whereRaw('account_name = ?', [account_name])
+    .whereRaw('name = ?', [name])
     .first()
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'account_id', 'account', 'account_name', 'account_old', 'status'
+        'payable_id', 'name', 'mobile', 'address', 'status'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
     .from(tableName)
-    .orderBy('account', 'ASC')
+    .orderBy('created_at', 'ASC')
     .timeout(timeout)
 
-    const findOne = (account_id) => knex.select(
-        'account_id', 'account', 'account_name', 'account_old', 'status'
+    const findOne = (payable_id) => knex.select(
+        'payable_id', 'name', 'mobile', 'address', 'status'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
     .from(tableName)
-    .whereRaw('account_id = ?', [account_id])
+    .whereRaw('payable_id = ?', [payable_id])
     .timeout(timeout)
 
-    const countWork = (account_id) => knex.count('account_id as numrow')
-    .from('ap_payable_type')
-    .whereRaw('account_id = ?', [account_id])
+    const countWork = (payable_id) => knex.count('payable_id as numrow')
+    .from('ap_payable_list')
+    .whereRaw('payable_id = ?', [payable_id])
     .first()
     .timeout(timeout)
 
-    const update = (account_id, props) => {
+    const update = (payable_id, props) => {
         return knex.update(props)
         .from(tableName)
-        .whereRaw('account_id = ?', [account_id])
+        .whereRaw('payable_id = ?', [payable_id])
         .timeout(timeout)
     }
 
-    const destroy = account_id => knex.del()
+    const destroy = payable_id => knex.del()
     .from(tableName)
-    .whereRaw('account_id = ?', [account_id])
+    .whereRaw('payable_id = ?', [payable_id])
     .timeout(timeout)
 
     return {
         name, 
         create,
         countByID,
-        countByCode,
         countByName,
         findAll,
         findOne,

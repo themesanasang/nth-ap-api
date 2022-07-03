@@ -38,11 +38,16 @@ const postAccount = async (req, res) => {
             return errorResponse(res, 409, 'USR_04', 'The Account Name already exists.', 'Account Name'); 
         } 
 
+        let created_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+        let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+
         await Account.create({
             account,
             account_name,
             account_old,
-            status
+            status,
+            created_at,
+            updated_at
         });
 
         return res.status(200).json(account);
@@ -129,11 +134,14 @@ const updateAccount = async (req, res) => {
             return errorResponse(res, 404, 'Account_04', 'Account does not exist.'); 
         }  
       
+        let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+
         let data = await Account.update(account_id, {
             account,
             account_name,
             account_old,
-            status
+            status,
+            updated_at
         });
   
         return res.status(200).json(data); 
