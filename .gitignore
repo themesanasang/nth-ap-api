@@ -1,5 +1,8 @@
 # dependencies
 /node_modules
 
+# jest-html-report
+/jest-html-reporters-attach
+
 # dotenv environment variables file
 .env
