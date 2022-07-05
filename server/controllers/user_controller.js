@@ -3,6 +3,7 @@
 import CryptoJS from 'crypto-js';
 import date from 'date-and-time';
 import { v4 as uuidv4  } from 'uuid';
+import isEmpty from 'just-is-empty';
 import { User } from '../models';
 import helpers from '../helpers/util';
 
@@ -25,10 +26,17 @@ const loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
 
+        // ** test login ** //
+        //password =CryptoJS.AES.encrypt(password, process.env.SECRET_KEY).toString();
+
         let bytes = CryptoJS.AES.decrypt(password, process.env.SECRET_KEY);
         let password_post = bytes.toString(CryptoJS.enc.Utf8);
 
         let dataUser = await User.findByUsername(username);
+        if (isEmpty(dataUser)) {
+          return errorResponse(res, 404, 'USR_04', 'user does not exist.', 'username'); 
+        }
+
         let match = await comparePasswords(password_post, dataUser[0].password);
         
         if (match) {
@@ -36,7 +44,7 @@ const loginUser = async (req, res) => {
             let token = createToken(user);
             
             res.status(200).json({
-                token: token
+              token: token
             });
             
         } else {

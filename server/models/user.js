@@ -36,6 +36,7 @@ module.exports = knex => {
     const findByUsername = (username) => knex.select('uuid', 'username', 'password')
     .from(tableName)
     .whereRaw('username = ?', [username])
+    .whereRaw('status = "Y"')
     .timeout(timeout)
 
     const findByUsernamePassword = (username, password) => knex.select('*')
