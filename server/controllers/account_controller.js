@@ -184,7 +184,7 @@ const updateAccount = async (req, res) => {
             await Account.destroy(account_id);
         }
 
-        return res.status(204).json();
+        return res.status(204).json({"result":"success"});
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
