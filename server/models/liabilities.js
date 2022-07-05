@@ -27,7 +27,7 @@ module.exports = knex => {
 
     const findAll = () => knex.select(
         'liabilities_id', 'liabilities_type_id', 'liabilities_name', 'status'
-        , knex.raw('(select liabilities_type_name from ap_liabilities_type where ap_liabilities_type.liabilities_type_id=ap_liabilities.liabilities_type_id) as liabilities_type_name')
+        , knex.raw('(SELECT liabilities_type_name FROM ap_liabilities_type WHERE ap_liabilities_type.liabilities_type_id=ap_liabilities.liabilities_type_id) AS liabilities_type_name')
     )
     .from(tableName)
     .orderBy('liabilities_id', 'ASC')
@@ -35,13 +35,13 @@ module.exports = knex => {
 
     const findOne = (liabilities_id) => knex.select(
         'liabilities_id', 'liabilities_type_id', 'liabilities_name', 'status'
-        , knex.raw('(select liabilities_type_name from ap_liabilities_type where ap_liabilities_type.liabilities_type_id=ap_liabilities.liabilities_type_id) as liabilities_type_name')
+        , knex.raw('(SELECT liabilities_type_name FROM ap_liabilities_type WHERE ap_liabilities_type.liabilities_type_id=ap_liabilities.liabilities_type_id) AS liabilities_type_name')
     )
     .from(tableName)
     .whereRaw('liabilities_id = ?', [liabilities_id])
     .timeout(timeout)
 
-    const countWork = (liabilities_id) => knex.count('liabilities_id as numrow')
+    const countWork = (liabilities_id) => knex.count('liabilities_id AS numrow')
     .from('ap_item')
     .whereRaw('liabilities_id = ?', [liabilities_id])
     .first()

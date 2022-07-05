@@ -48,7 +48,7 @@ module.exports = knex => {
     .whereRaw('account_id = ?', [account_id])
     .timeout(timeout)
 
-    const countWork = (account_id) => knex.count('account_id as numrow')
+    const countWork = (account_id) => knex.count('account_id AS numrow')
     .from('ap_payable_type')
     .whereRaw('account_id = ?', [account_id])
     .first()

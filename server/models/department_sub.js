@@ -40,7 +40,7 @@ module.exports = knex => {
     .whereRaw('department_sub_id = ?', [id])
     .timeout(timeout)
 
-    const countWork = (id) => knex.count('department_sub_id as numrow')
+    const countWork = (id) => knex.count('department_sub_id AS numrow')
     .from('ap_account_payable')
     .whereRaw('department_sub_id = ?', [id])
     .first()

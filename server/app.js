@@ -41,6 +41,7 @@ app.use('/', [
   require('./routes/payable_list_routes'),
   require('./routes/liabilities_type_routes'),
   require('./routes/liabilities_routes'),
+  require('./routes/item_routes'),
 ])
 
 module.exports = app

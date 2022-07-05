@@ -27,8 +27,8 @@ module.exports = knex => {
 
     const findAll = () => knex.select(
         'payable_list_id', 'payable_id', 'payable_type_id', 'status'
-        , knex.raw('(select name from ap_payable where ap_payable.payable_id=ap_payable_list.payable_id) as ap_payable_name')
-        , knex.raw('(select payable_type_name from ap_payable_type where ap_payable_type.payable_type_id=ap_payable_list.payable_type_id) as payable_type_name')
+        , knex.raw('(SELECT name FROM ap_payable WHERE ap_payable.payable_id=ap_payable_list.payable_id) AS ap_payable_name')
+        , knex.raw('(SELECT payable_type_name FROM ap_payable_type WHERE ap_payable_type.payable_type_id=ap_payable_list.payable_type_id) AS payable_type_name')
     )
     .from(tableName)
     .orderBy('payable_list_id', 'ASC')
@@ -36,14 +36,14 @@ module.exports = knex => {
 
     const findOne = (payable_list_id) => knex.select(
         'payable_list_id', 'payable_id', 'payable_type_id', 'status'
-        , knex.raw('(select name from ap_payable where ap_payable.payable_id=ap_payable_list.payable_id) as ap_payable_name')
-        , knex.raw('(select payable_type_name from ap_payable_type where ap_payable_type.payable_type_id=ap_payable_list.payable_type_id) as payable_type_name')
+        , knex.raw('(SELECT name FROM ap_payable WHERE ap_payable.payable_id=ap_payable_list.payable_id) AS ap_payable_name')
+        , knex.raw('(SELECT payable_type_name FROM ap_payable_type WHERE ap_payable_type.payable_type_id=ap_payable_list.payable_type_id) AS payable_type_name')
     )
     .from(tableName)
     .whereRaw('payable_list_id = ?', [payable_list_id])
     .timeout(timeout)
 
-    const countWork = (payable_list_id) => knex.count('ap_item as numrow')
+    const countWork = (payable_list_id) => knex.count('ap_item AS numrow')
     .from('ap_item')
     .whereRaw('payable_list_id = ?', [payable_list_id])
     .first()
