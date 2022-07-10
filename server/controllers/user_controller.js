@@ -57,6 +57,42 @@ const loginUser = async (req, res) => {
 
 
 /**
+  * @description -This method logins a user by Social
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - user and accessToken
+*/
+const loginSocial = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    let bytes = CryptoJS.AES.decrypt(email, process.env.SECRET_KEY);
+    let email_post = bytes.toString(CryptoJS.enc.Utf8);
+
+    let dataUser = await User.findByEmail(email_post);
+    if (isEmpty(dataUser)) {
+      return errorResponse(res, 404, 'USR_04', 'email does not exist.', 'email'); 
+    }
+
+    let match = true;
+    
+    if (match) {
+      let user = dataUser[0];
+      let token = createToken(user);
+      
+      res.status(200).json({
+        token: token
+      });
+    } else {
+      return errorResponse(res, 400, 'USR_01', 'data is invalid. user');
+    }
+  } catch (error) {
+    return errorResponse(res, 500, 'Error', 'Internal Server Error');
+  }
+}
+
+
+/**
   * @description -This method registers a user
   * @param {object} req - The request payload
   * @param {object} res - The response payload sent back from the method
@@ -94,6 +130,42 @@ const postUser = async (req, res) => {
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
+}
+
+
+/**
+  * @description -This method registers a user Social
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - uuid
+*/
+const postUserSocial = async (req, res) => {
+  const { 
+    email
+  } = req.body;  
+
+  try {
+    let existingUser = await User.countByEmail(email);
+
+    if (existingUser['numrow'] > 0) {
+      return errorResponse(res, 409, 'USR_04', 'The email already exists.', 'email'); 
+    }  
+    
+    let created_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+    let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+    let uuid = uuidv4();
+
+    let user = await User.create({
+      uuid,
+      email,
+      created_at,
+      updated_at
+    });
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return errorResponse(res, 500, 'Error', 'Internal Server Error');
+  }
 }
 
 
@@ -235,7 +307,9 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
   loginUser,
+  loginSocial,
   postUser,
+  postUserSocial,
   getUserAll,
   getUser,
   updateUser,

@@ -25,6 +25,11 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
+    const countByEmail = (email) => knex.count('email AS numrow')
+    .from(tableName)
+    .whereRaw('email = ?', [email])
+    .first()
+    .timeout(timeout)
 
     const countByUsernamePassword = (username, password) => knex.count('username AS numrow')
     .from(tableName)
@@ -43,6 +48,12 @@ module.exports = knex => {
     .from(tableName)
     .whereRaw('username = ?', [username])
     .whereRaw('password = ?', [password])
+    .timeout(timeout)
+
+    const findByEmail = (email) => knex.select('uuid', 'username')
+    .from(tableName)
+    .whereRaw('email = ?', [email])
+    .whereRaw('status = "Y"')
     .timeout(timeout)
 
     const findAll = () => knex.select(
@@ -86,9 +97,11 @@ module.exports = knex => {
         create,
         countByUUID,
         countByUsername,
+        countByEmail,
         countByUsernamePassword,
         findByUsername,
         findByUsernamePassword,
+        findByEmail,
         findAll,
         findOne,
         countWork,
