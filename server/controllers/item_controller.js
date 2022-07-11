@@ -82,7 +82,7 @@ const getItem = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let item_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!item_id) {
@@ -112,7 +112,7 @@ const updateItem = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let item_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -155,7 +155,7 @@ const updateItem = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let item_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingItem =  await Item.countByID(item_id);

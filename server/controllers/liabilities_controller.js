@@ -74,7 +74,7 @@ const getLiabilities = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let liabilities_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!liabilities_id) {
@@ -104,7 +104,7 @@ const updateLiabilities = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let liabilities_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -142,7 +142,7 @@ const updateLiabilities = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let liabilities_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingLiabilities =  await Liabilities.countByID(liabilities_id);

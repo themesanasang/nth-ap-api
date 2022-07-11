@@ -74,7 +74,7 @@ const getPayableList = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_list_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!payable_list_id) {
@@ -104,7 +104,7 @@ const updatePayableList = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_list_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -142,7 +142,7 @@ const updatePayableList = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_list_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingPayableList =  await PayableList.countByID(payable_list_id);

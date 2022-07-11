@@ -72,7 +72,7 @@ const getLiabilitiesType = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let liabilities_type_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!liabilities_type_id) {
@@ -102,7 +102,7 @@ const updateLiabilitiesType = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let liabilities_type_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -138,7 +138,7 @@ const updateLiabilitiesType = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let liabilities_type_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingLiabilitiesType =  await LiabilitiesType.countByID(liabilities_type_id);

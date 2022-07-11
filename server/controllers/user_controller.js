@@ -9,10 +9,10 @@ import helpers from '../helpers/util';
 
 
 let {
-    hashPassword,
-    comparePasswords,
-    createToken,
-    errorResponse
+  hashPassword,
+  comparePasswords,
+  createToken,
+  errorResponse
 } = helpers;
 
 
@@ -27,9 +27,9 @@ const loginUser = async (req, res) => {
         const { username, password } = req.body;
 
         // ** test login ** //
-        //password =CryptoJS.AES.encrypt(password, process.env.SECRET_KEY).toString();
+        //password =CryptoJS.AES.encrypt(password, process.env.secretKey).toString();
 
-        let bytes = CryptoJS.AES.decrypt(password, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(password, process.env.secretKey);
         let password_post = bytes.toString(CryptoJS.enc.Utf8);
 
         let dataUser = await User.findByUsername(username);
@@ -66,7 +66,7 @@ const loginSocial = async (req, res) => {
   try {
     const { email } = req.body;
 
-    let bytes = CryptoJS.AES.decrypt(email, process.env.SECRET_KEY);
+    let bytes = CryptoJS.AES.decrypt(email, process.env.secretKey);
     let email_post = bytes.toString(CryptoJS.enc.Utf8);
 
     let dataUser = await User.findByEmail(email_post);
@@ -141,7 +141,9 @@ const postUser = async (req, res) => {
 */
 const postUserSocial = async (req, res) => {
   const { 
-    email
+    fullname,
+    email,
+    provider
   } = req.body;  
 
   try {
@@ -157,7 +159,9 @@ const postUserSocial = async (req, res) => {
 
     let user = await User.create({
       uuid,
+      fullname,
       email,
+      provider,
       created_at,
       updated_at
     });
@@ -200,7 +204,7 @@ const getUser = async (req, res) => {
     try {
       const { id } = req.params;
   
-      let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+      let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
       let uuid = bytes.toString(CryptoJS.enc.Utf8);
   
       if (!uuid) {
@@ -230,7 +234,7 @@ const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let uuid = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -275,7 +279,7 @@ const deleteUser = async (req, res) => {
     try {
       const { id } = req.params;
   
-      let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+      let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
       let uuid = bytes.toString(CryptoJS.enc.Utf8);
   
       let existingUser =  await User.countByUUID(uuid);

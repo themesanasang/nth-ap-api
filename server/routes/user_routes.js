@@ -14,7 +14,6 @@ import {
   deleteUser
 } from '../controllers/user_controller';
 
-
 router.route('/api/v1/login').post(loginUser)
 router.route('/api/v1/login/social').post(loginSocial)
 

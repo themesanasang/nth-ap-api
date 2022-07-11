@@ -88,7 +88,7 @@ const getAccount = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let account_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!account_id) {
@@ -118,7 +118,7 @@ const updateAccount = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let account_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -161,7 +161,7 @@ const updateAccount = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let account_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingAccount =  await Account.countByID(account_id);

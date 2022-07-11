@@ -82,7 +82,7 @@ const getPayable = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!payable_id) {
@@ -112,7 +112,7 @@ const updatePayable = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -155,7 +155,7 @@ const updatePayable = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingPayable =  await Payable.countByID(payable_id);

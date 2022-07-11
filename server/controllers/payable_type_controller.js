@@ -74,7 +74,7 @@ const getPayableType = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_type_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!payable_type_id) {
@@ -104,7 +104,7 @@ const updatePayableType = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_type_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -142,7 +142,7 @@ const updatePayableType = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let payable_type_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingPayableType =  await PayableType.countByID(payable_type_id);

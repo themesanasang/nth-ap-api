@@ -80,7 +80,7 @@ const getDepartment = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let department_id = bytes.toString(CryptoJS.enc.Utf8);
 
         if (!department_id) {
@@ -110,7 +110,7 @@ const updateDepartment = async (req, res) => {
     try {
         const { id } = req.params;
   
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let department_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
@@ -148,7 +148,7 @@ const updateDepartment = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let bytes = CryptoJS.AES.decrypt(id, process.env.SECRET_KEY);
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let department_id = bytes.toString(CryptoJS.enc.Utf8);
 
         let existingDepartment =  await Department.countByID(department_id);
