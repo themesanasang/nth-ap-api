@@ -38,7 +38,7 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
-    const findByUsername = (username) => knex.select('uuid', 'username', 'password')
+    const findByUsername = (username) => knex.select('uuid', 'username', 'password', 'level')
     .from(tableName)
     .whereRaw('username = ?', [username])
     .whereRaw('status = "Y"')
@@ -50,14 +50,14 @@ module.exports = knex => {
     .whereRaw('password = ?', [password])
     .timeout(timeout)
 
-    const findByEmail = (email) => knex.select('uuid', 'username')
+    const findByEmail = (email) => knex.select('uuid', 'username', 'level')
     .from(tableName)
     .whereRaw('email = ?', [email])
     .whereRaw('status = "Y"')
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'uuid', 'username', 'fullname', 'level', 'status'
+        'uuid', 'username', 'fullname', 'email', 'line_id', 'level', 'status'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
@@ -66,7 +66,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findOne = (uuid) => knex.select(
-        'uuid', 'username', 'fullname', 'facebook_id', 'email', 'line_id', 'level', 'status'
+        'uuid', 'username', 'fullname', 'email', 'line_id', 'level', 'status'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
