@@ -302,7 +302,7 @@ const deleteUser = async (req, res) => {
         await User.destroy(uuid);
       }
   
-      return res.status(204).json({"result":"success"});
+      return res.status(200).json({"result":"success"});
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
