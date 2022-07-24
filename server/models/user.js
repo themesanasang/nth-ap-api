@@ -57,7 +57,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'uuid', 'username', 'fullname', 'email', 'line_id', 'level', 'status'
+        'uuid', 'username', 'fullname', 'email', 'line_id', 'level', 'status', 'provider'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
@@ -66,7 +66,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findOne = (uuid) => knex.select(
-        'uuid', 'username', 'fullname', 'email', 'line_id', 'level', 'status'
+        'uuid', 'username', 'fullname', 'email', 'line_id', 'level', 'status', 'provider'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )

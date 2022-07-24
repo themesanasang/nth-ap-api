@@ -133,6 +133,56 @@ const postUser = async (req, res) => {
 }
 
 
+
+/**
+  * @description -This method registers a user all data
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - uuid
+  */
+ const postUserAllData = async (req, res) => {
+  const { 
+      username,
+      password,
+      fullname,
+      email,
+      line_id,
+      level,
+      status
+  } = req.body;  
+
+  try {
+      let existingUser = await User.countByUsername(username);
+
+      if (existingUser['numrow'] > 0) {
+          return errorResponse(res, 409, 'USR_04', 'The username already exists.', 'username'); 
+      }  
+      
+      let created_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+      let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+      let hashedPassword = await hashPassword(password);
+      let uuid = uuidv4();
+
+      let user = await User.create({
+          uuid,
+          username,
+          password: hashedPassword,
+          fullname,
+          email,
+          line_id,
+          level,
+          status,
+          created_at,
+          updated_at
+      });
+
+      return res.status(200).json(user);
+  } catch (error) {
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
+  }
+}
+
+
 /**
   * @description -This method registers a user Social
   * @param {object} req - The request payload
@@ -241,7 +291,6 @@ const updateUser = async (req, res) => {
             fullname,
             email,
             line_id,
-            facebook_id,
             status 
         } = req.body;  
   
@@ -257,7 +306,6 @@ const updateUser = async (req, res) => {
             fullname,
             email,
             line_id,
-            facebook_id,
             status, 
             updated_at
         });
@@ -266,6 +314,68 @@ const updateUser = async (req, res) => {
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
+}
+
+
+/**
+  * @description -This method updates a User's personal details all
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload
+  * @returns {object} - User
+  */
+ const updateUser2 = async (req, res) => {
+  try {
+      const { id } = req.params;
+
+      let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+      let uuid = bytes.toString(CryptoJS.enc.Utf8);
+
+      let { 
+          fullname,
+          password,
+          email,
+          line_id,
+          level,
+          status 
+      } = req.body;  
+
+      let existingUser =  await User.countByUUID(uuid);
+
+      if (existingUser['numrow'] == 0) {
+          return errorResponse(res, 404, 'user_04', 'user does not exist.'); 
+      }  
+    
+      let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");  
+
+      let data;
+
+      if (password == '' || password == null) {
+        data = await User.update(uuid, {
+            fullname,
+            email,
+            line_id,
+            level,
+            status, 
+            updated_at
+        });
+      } else {
+        let hashedPassword = await hashPassword(password);
+        data = await User.update(uuid, {
+          fullname,
+          password: hashedPassword,
+          email,
+          line_id,
+          level,
+          status, 
+          updated_at
+        });
+      }
+     
+
+      return res.status(200).json(data); 
+  } catch (error) {
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
+  }
 }
 
 
@@ -283,6 +393,8 @@ const deleteUser = async (req, res) => {
       let uuid = bytes.toString(CryptoJS.enc.Utf8);
   
       let existingUser =  await User.countByUUID(uuid);
+
+      
 
       if (existingUser['numrow'] == 0) {
         return errorResponse(res, 404, 'user_01', 'No user found', 'id'); 
@@ -304,7 +416,7 @@ const deleteUser = async (req, res) => {
   
       return res.status(200).json({"result":"success"});
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 
@@ -313,9 +425,11 @@ module.exports = {
   loginUser,
   loginSocial,
   postUser,
+  postUserAllData,
   postUserSocial,
   getUserAll,
   getUser,
   updateUser,
+  updateUser2,
   deleteUser
 } 
