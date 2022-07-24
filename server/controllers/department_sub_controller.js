@@ -67,7 +67,7 @@ const getDepartmentSubAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+        return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
     }
 }
 

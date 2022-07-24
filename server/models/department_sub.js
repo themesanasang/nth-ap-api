@@ -30,13 +30,19 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
-    const findAll = () => knex.select('*')
+    const findAll = () => knex.select(
+        'department_sub_id', 'ap_department.department_id', 'ap_department.departmen_name', 'departmen_sub_code', 'departmen_sub_name', 'ap_department_sub.status'
+    )
     .from(tableName)
-    .orderBy('departmen_sub_code', 'ASC')
+    .leftJoin('ap_department', 'ap_department.department_id', '=', 'ap_department_sub.department_id')
+    .orderBy('department_sub_id', 'ASC')
     .timeout(timeout)
 
-    const findOne = (id) => knex.select('*')
+    const findOne = (id) => knex.select(
+        'department_sub_id', 'ap_department.department_id', 'ap_department.departmen_name', 'departmen_sub_code', 'departmen_sub_name', 'ap_department_sub.status'
+    )
     .from(tableName)
+    .leftJoin('ap_department', 'ap_department.department_id', '=', 'ap_department_sub.department_id')
     .whereRaw('department_sub_id = ?', [id])
     .timeout(timeout)
 
