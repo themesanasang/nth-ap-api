@@ -36,6 +36,8 @@ app.use('/', [
   require('./routes/department_sub_routes'),
   require('./routes/account_routes'),
   require('./routes/account_old_routes'),
+  require('./routes/account_gf_routes'),
+  require('./routes/account_main_routes'),
   require('./routes/payable_routes'),
   require('./routes/payable_type_routes'),
   require('./routes/payable_list_routes'),

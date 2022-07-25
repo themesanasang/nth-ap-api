@@ -19,6 +19,8 @@ let {
   */
 const postAccount = async (req, res) => {
     const { 
+        acc_main_id,
+        gf_id,
         account,
         account_name,
         account_old,
@@ -42,6 +44,8 @@ const postAccount = async (req, res) => {
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
 
         await Account.create({
+            acc_main_id,
+            gf_id,
             account,
             account_name,
             account_old,
@@ -122,6 +126,8 @@ const updateAccount = async (req, res) => {
         let account_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
+            acc_main_id,
+            gf_id,
             account,
             account_name,
             account_old,
@@ -137,6 +143,8 @@ const updateAccount = async (req, res) => {
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
 
         let data = await Account.update(account_id, {
+            acc_main_id,
+            gf_id,
             account,
             account_name,
             account_old,
