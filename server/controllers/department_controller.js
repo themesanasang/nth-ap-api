@@ -18,31 +18,31 @@ let {
   */
 const postDepartment = async (req, res) => {
     const { 
-        departmen_code,
-        departmen_name,
+        department_code,
+        department_name,
         status
     } = req.body;  
   
     try {
-        let existingDepartmentCode = await Department.countByCode(departmen_code);
+        let existingDepartmentCode = await Department.countByCode(department_code);
 
         if (existingDepartmentCode['numrow'] > 0) {
             return errorResponse(res, 409, 'USR_04', 'The Department Code already exists.', 'Department Code'); 
         }  
 
-        let existingDepartmentName = await Department.countByName(departmen_name);
+        let existingDepartmentName = await Department.countByName(department_name);
 
         if (existingDepartmentName['numrow'] > 0) {
             return errorResponse(res, 409, 'USR_04', 'The Department Name already exists.', 'Department Name'); 
         } 
 
         await Department.create({
-            departmen_code,
-            departmen_name,
+            department_code,
+            department_name,
             status
         });
 
-        return res.status(200).json(departmen_code);
+        return res.status(200).json(department_code);
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
@@ -114,8 +114,8 @@ const updateDepartment = async (req, res) => {
         let department_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
-            departmen_code,
-            departmen_name,
+            department_code,
+            department_name,
             status
         } = req.body;  
   
@@ -126,8 +126,8 @@ const updateDepartment = async (req, res) => {
         }  
       
         let data = await Department.update(department_id, {
-            departmen_code,
-            departmen_name,
+            department_code,
+            department_name,
             status
         });
   

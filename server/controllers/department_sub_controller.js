@@ -18,33 +18,33 @@ let {
   */
 const postDepartmentSub = async (req, res) => {
     const { 
-        departmen_id,
-        departmen_sub_code,
-        departmen_sub_name,
+        department_id,
+        department_sub_code,
+        department_sub_name,
         status
     } = req.body;  
   
     try {
-        let existingDepartmentSubCode = await DepartmentSub.countByCode(departmen_sub_code);
+        let existingDepartmentSubCode = await DepartmentSub.countByCode(department_sub_code);
 
         if (existingDepartmentSubCode['numrow'] > 0) {
             return errorResponse(res, 409, 'USR_04', 'The DepartmentSub Code already exists.', 'DepartmentSub Code'); 
         }  
 
-        let existingDepartmentSubName = await DepartmentSub.countByName(departmen_sub_name);
+        let existingDepartmentSubName = await DepartmentSub.countByName(department_sub_name);
 
         if (existingDepartmentSubName['numrow'] > 0) {
             return errorResponse(res, 409, 'USR_04', 'The DepartmentSub Name already exists.', 'DepartmentSub Name'); 
         } 
 
         await DepartmentSub.create({
-            departmen_id,
-            departmen_sub_code,
-            departmen_sub_name,
+            department_id,
+            department_sub_code,
+            department_sub_name,
             status
         });
 
-        return res.status(200).json(departmen_sub_code);
+        return res.status(200).json(department_sub_code);
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
@@ -116,9 +116,9 @@ const updateDepartmentSub = async (req, res) => {
         let department_sub_id = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
-            departmen_id,
-            departmen_code,
-            departmen_name,
+            department_id,
+            department_sub_code,
+            department_sub_name,
             status
         } = req.body;  
   
@@ -129,9 +129,9 @@ const updateDepartmentSub = async (req, res) => {
         }  
       
         let data = await DepartmentSub.update(department_sub_id, {
-            departmen_id,
-            departmen_code,
-            departmen_name,
+            department_id,
+            department_sub_code,
+            department_sub_name,
             status
         });
   

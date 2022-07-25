@@ -18,21 +18,21 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
-    const countByCode = (departmen_code) => knex.count('departmen_code AS numrow')
+    const countByCode = (departmen_code) => knex.count('department_code AS numrow')
     .from(tableName)
-    .whereRaw('departmen_code = ?', [departmen_code])
+    .whereRaw('department_code = ?', [departmen_code])
     .first()
     .timeout(timeout)
 
-    const countByName = (departmen_name) => knex.count('departmen_name AS numrow')
+    const countByName = (departmen_name) => knex.count('department_name AS numrow')
     .from(tableName)
-    .whereRaw('departmen_name = ?', [departmen_name])
+    .whereRaw('department_name = ?', [departmen_name])
     .first()
     .timeout(timeout)
 
     const findAll = () => knex.select('*')
     .from(tableName)
-    .orderBy('departmen_code', 'ASC')
+    .orderBy('department_code', 'ASC')
     .timeout(timeout)
 
     const findOne = (id) => knex.select('*')

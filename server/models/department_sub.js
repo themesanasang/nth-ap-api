@@ -18,20 +18,20 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
-    const countByCode = (departmen_sub_code) => knex.count('departmen_sub_code AS numrow')
+    const countByCode = (departmen_sub_code) => knex.count('department_sub_code AS numrow')
     .from(tableName)
-    .whereRaw('departmen_sub_code = ?', [departmen_sub_code])
+    .whereRaw('department_sub_code = ?', [departmen_sub_code])
     .first()
     .timeout(timeout)
 
-    const countByName = (departmen_sub_name) => knex.count('departmen_sub_name AS numrow')
+    const countByName = (departmen_sub_name) => knex.count('department_sub_name AS numrow')
     .from(tableName)
-    .whereRaw('departmen_sub_name = ?', [departmen_sub_name])
+    .whereRaw('department_sub_name = ?', [departmen_sub_name])
     .first()
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'department_sub_id', 'ap_department.department_id', 'ap_department.departmen_name', 'departmen_sub_code', 'departmen_sub_name', 'ap_department_sub.status'
+        'department_sub_id', 'ap_department.department_id', 'ap_department.department_name', 'department_sub_code', 'department_sub_name', 'ap_department_sub.status'
     )
     .from(tableName)
     .leftJoin('ap_department', 'ap_department.department_id', '=', 'ap_department_sub.department_id')
@@ -39,7 +39,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findOne = (id) => knex.select(
-        'department_sub_id', 'ap_department.department_id', 'ap_department.departmen_name', 'departmen_sub_code', 'departmen_sub_name', 'ap_department_sub.status'
+        'department_sub_id', 'ap_department.department_id', 'ap_department.department_name', 'department_sub_code', 'department_sub_name', 'ap_department_sub.status'
     )
     .from(tableName)
     .leftJoin('ap_department', 'ap_department.department_id', '=', 'ap_department_sub.department_id')
