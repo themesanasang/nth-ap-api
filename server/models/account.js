@@ -31,17 +31,20 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'account_id', 'account', 'account_name', 'account_old', 'status', 'ap_account.gf_id', 'ap_account.acc_main_id'
+        'account_id', 'account', 'account_name', 'account_old', 'ap_account.status'
+        , 'ap_account.gf_id', 'ap_account_gf.gf_code', 'ap_account.acc_main_id', 'ap_account_main.acc_main_code'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )
     .from(tableName)
-    .orderBy('account', 'ASC')
+    .leftJoin('ap_account_gf', 'ap_account_gf.gf_id', '=', 'ap_account.gf_id')
+    .leftJoin('ap_account_main', 'ap_account_main.acc_main_id', '=', 'ap_account.acc_main_id')
+    .orderBy('account_id', 'ASC')
     .timeout(timeout)
 
     const findOne = (account_id) => knex.select(
-        'account_id', 'account', 'account_name', 'account_old', 'status'
-        , 'ap_account.gf_id', 'ap_account_gf.gf_name', 'ap_account.acc_main_id', 'ap_account.acc_main_name'
+        'account_id', 'account', 'account_name', 'account_old', 'ap_account.status'
+        , 'ap_account.gf_id', 'ap_account_gf.gf_name', 'ap_account_gf.gf_code', 'ap_account.acc_main_id', 'ap_account_main.acc_main_code', 'ap_account_main.acc_main_name'
         , knex.raw('CONCAT(DATE_FORMAT(created_at, "%d-%m-"),DATE_FORMAT(created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(updated_at, "%d-%m-"),DATE_FORMAT(updated_at, "%Y")+543) AS date_update') 
     )

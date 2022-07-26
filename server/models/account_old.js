@@ -18,6 +18,12 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
+    const countByAccID = (account_id) => knex.count('account_id AS numrow')
+    .from(tableName)
+    .whereRaw('account_id = ?', [account_id])
+    .first()
+    .timeout(timeout)
+
     const countByAccount= (account_id, account_old, account_old_name) => knex.count('account_old_id AS numrow')
     .from(tableName)
     .whereRaw('account_id = ?', [account_id])
@@ -26,7 +32,14 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
-    const findAccountAll = (account_id) => knex.select(
+    const findAll = () => knex.select(
+        'account_old_id', 'account_id', 'account_old', 'account_old_name'
+    )
+    .from(tableName)
+    .orderBy('account_old_id', 'ASC')
+    .timeout(timeout)
+
+    const findOne = (account_id) => knex.select(
         'account_old_id', 'account_id', 'account_old', 'account_old_name'
     )
     .from(tableName)
@@ -50,8 +63,10 @@ module.exports = knex => {
         name, 
         create,
         countByID,
+        countByAccID,
         countByAccount,
-        findAccountAll,
+        findAll,
+        findOne,
         update,
         destroy
     }

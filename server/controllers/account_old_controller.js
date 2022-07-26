@@ -24,11 +24,11 @@ const postAccountOld = async (req, res) => {
     } = req.body;  
   
     try {
-
         let existingAccount =  await AccountOld.countByAccount(account_id, account_old, account_old_name);
 
         if (existingAccount['numrow'] > 0) {
-            return errorResponse(res, 404, 'Account_01', 'The Account Code already exists.', 'Account'); 
+            //return 200 เช็คสถานะเอาหน้า web
+            return errorResponse(res, 200, 'Account_01', 'The Account Code already exists.', 'Account'); 
         }  
 
         await AccountOld.create({
@@ -45,12 +45,33 @@ const postAccountOld = async (req, res) => {
 
 
 /**
+  * @description -This method returns detail of Account all
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - Account all
+  */
+ const getAccountOldAll = async (req, res) => {
+    try {
+        let data = await AccountOld.findAll();
+
+        if (!data) {
+            return errorResponse(res, 404, 'Account_04', 'Account does not exist.');
+        }
+
+        return res.status(200).json(data);
+    } catch (error) {
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
+/**
   * @description -This method get doc AccountOld detail
   * @param {object} req - The request payload sent from the router
   * @param {object} res - The response payload sent AccountOld from the controller
   * @returns {object} - AccountOld detail
   */
- const getAccountOldAll = async (req, res) => {
+ const getAccountOldOne = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -61,7 +82,7 @@ const postAccountOld = async (req, res) => {
             return errorResponse(res, 400, 'Account_01', 'id is required', 'id');
         }
 
-        let data = await AccountOld.findAccountAll(account_id);
+        let data = await AccountOld.findOne(account_id);
 
         if (data == '') {
             return errorResponse(res, 404, 'AccountOld_04', 'AccountOld does not exist.');
@@ -142,6 +163,7 @@ const postAccountOld = async (req, res) => {
 module.exports = {
     postAccountOld,
     getAccountOldAll,
+    getAccountOldOne,
     updateAccountOld,
     deleteAccountOld
 } 
