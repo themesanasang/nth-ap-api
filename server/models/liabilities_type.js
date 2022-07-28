@@ -18,21 +18,21 @@ module.exports = knex => {
     .first()
     .timeout(timeout)
 
-    const countByName = (liabilities_type_namee) => knex.count('liabilities_typ_name AS numrow')
+    const countByName = (liabilities_type_name) => knex.count('liabilities_type_name AS numrow')
     .from(tableName)
-    .whereRaw('liabilities_typ_namee = ?', [liabilities_type_namee])
+    .whereRaw('liabilities_type_name = ?', [liabilities_type_name])
     .first()
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'liabilities_type_id', 'liabilities_type_namee', 'status'
+        'liabilities_type_id', 'liabilities_type_name', 'status'
     )
     .from(tableName)
     .orderBy('liabilities_type_id', 'ASC')
     .timeout(timeout)
 
     const findOne = (liabilities_type_id) => knex.select(
-        'liabilities_type_id', 'liabilities_type_namee', 'status'
+        'liabilities_type_id', 'liabilities_type_name', 'status'
     )
     .from(tableName)
     .whereRaw('liabilities_type_id = ?', [liabilities_type_id])

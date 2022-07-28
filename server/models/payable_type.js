@@ -27,7 +27,7 @@ module.exports = knex => {
 
     const findAll = () => knex.select(
         'account_id', 'payable_type_name', 'status'
-        , knex.raw('(SELECT concat(account,"-",account_name) FROM ap_account WHERE ap_account.account_id=ap_payable_type.account_id) AS account')
+        , knex.raw('(SELECT account FROM ap_account WHERE ap_account.account_id=ap_payable_type.account_id) AS account')
     )
     .from(tableName)
     .orderBy('payable_type_id', 'ASC')
@@ -35,7 +35,7 @@ module.exports = knex => {
 
     const findOne = (payable_type_id) => knex.select(
         'account_id', 'payable_type_name', 'status'
-        , knex.raw('(SELECT concat(account,"-",account_name) FROM ap_account WHERE ap_account.account_id=ap_payable_type.account_id) AS account')
+        , knex.raw('(SELECT account FROM ap_account WHERE ap_account.account_id=ap_payable_type.account_id) AS account')
     )
     .from(tableName)
     .whereRaw('payable_type_id = ?', [payable_type_id])

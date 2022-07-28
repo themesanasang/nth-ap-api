@@ -34,7 +34,7 @@ const postLiabilitiesType = async (req, res) => {
             status
         });
 
-        return res.status(200).json(liabilities_type_name);
+        return res.status(200).json({"result":"success"});
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
