@@ -24,10 +24,10 @@ const postPayableList = async (req, res) => {
     } = req.body;  
   
     try {
-        let existingPayableListName = await PayableList.countByName(account_id, payable_type_name);
+        let existingPayableLis = await PayableList.countByAll(payable_id, payable_type_id);
 
-        if (existingPayableListName['numrow'] > 0) {
-            return errorResponse(res, 409, 'USR_04', 'The PayableList Name already exists.', 'PayableList Name'); 
+        if (existingPayableLis['numrow'] > 0) {
+            return errorResponse(res, 409, 'USR_04', 'The PayableList already exists.', 'PayableList'); 
         } 
 
         await PayableList.create({

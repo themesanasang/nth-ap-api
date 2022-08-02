@@ -43,7 +43,7 @@ module.exports = knex => {
     .whereRaw('payable_list_id = ?', [payable_list_id])
     .timeout(timeout)
 
-    const countWork = (payable_list_id) => knex.count('ap_item AS numrow')
+    const countWork = (payable_list_id) => knex.count('payable_list_id AS numrow')
     .from('ap_item')
     .whereRaw('payable_list_id = ?', [payable_list_id])
     .first()
