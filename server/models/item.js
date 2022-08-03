@@ -27,7 +27,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'ap_item.payable_list_id', 'ap_item.liabilities_id', 'ap_item.item_name', 'ap_item.status'
+        'item_id', 'ap_item.payable_list_id', 'ap_item.liabilities_id', 'ap_item.item_name', 'ap_item.status'
         , 'ap_liabilities.liabilities_name', 'ap_payable.name'
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.created_at, "%d-%m-"),DATE_FORMAT(ap_item.created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.updated_at, "%d-%m-"),DATE_FORMAT(ap_item.updated_at, "%Y")+543) AS date_update') 
@@ -40,7 +40,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findOne = (item_id) => knex.select(
-        'ap_item.payable_list_id', 'ap_item.liabilities_id', 'ap_item.item_name', 'ap_item.status'
+        'item_id', 'ap_item.payable_list_id', 'ap_item.liabilities_id', 'ap_item.item_name', 'ap_item.status'
         , 'ap_liabilities.liabilities_name', 'ap_payable.name'
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.created_at, "%d-%m-"),DATE_FORMAT(ap_item.created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.updated_at, "%d-%m-"),DATE_FORMAT(ap_item.updated_at, "%Y")+543) AS date_update') 
