@@ -26,7 +26,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findAll = () => knex.select(
-        'payable_type_id', 'account_id', 'payable_type_name', 'status'
+        'payable_type_id', 'account_id', 'payable_type_name', 'status_arrear', 'status'
         , knex.raw('(SELECT account FROM ap_account WHERE ap_account.account_id=ap_payable_type.account_id) AS account')
     )
     .from(tableName)
@@ -34,7 +34,7 @@ module.exports = knex => {
     .timeout(timeout)
 
     const findOne = (payable_type_id) => knex.select(
-        'payable_type_id', 'account_id', 'payable_type_name', 'status'
+        'payable_type_id', 'account_id', 'payable_type_name', 'status_arrear', 'status'
         , knex.raw('(SELECT account FROM ap_account WHERE ap_account.account_id=ap_payable_type.account_id) AS account')
     )
     .from(tableName)

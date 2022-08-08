@@ -20,6 +20,7 @@ const postPayableType = async (req, res) => {
     const { 
         account_id,
         payable_type_name,
+        status_arrear,
         status
     } = req.body;  
   
@@ -33,6 +34,7 @@ const postPayableType = async (req, res) => {
         await PayableType.create({
             account_id,
             payable_type_name,
+            status_arrear,
             status
         });
 
@@ -110,6 +112,7 @@ const updatePayableType = async (req, res) => {
         let { 
             account_id,
             payable_type_name,
+            status_arrear,
             status
         } = req.body;  
   
@@ -122,6 +125,7 @@ const updatePayableType = async (req, res) => {
         let data = await PayableType.update(payable_type_id, {
             account_id,
             payable_type_name,
+            status_arrear,
             status
         });
   
