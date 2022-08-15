@@ -20,7 +20,6 @@ let {
 const postAccountPayable = async (req, res) => {
     const { 
         payable_date,
-        data_date,
         round_date_start,
         round_date_end,
         item_id,
@@ -38,6 +37,7 @@ const postAccountPayable = async (req, res) => {
     } = req.body;  
   
     try {
+        let data_date = date.format(new Date(), "YYYY-MM-DD");
         let created_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
 
@@ -181,7 +181,6 @@ const updateAccountPayable = async (req, res) => {
   
         let { 
             payable_date,
-            data_date,
             round_date_start,
             round_date_end,
             item_id,
@@ -208,7 +207,6 @@ const updateAccountPayable = async (req, res) => {
       
         let data = await AccountPayable.update(AccountPayable_id, {
             payable_date,
-            data_date,
             round_date_start,
             round_date_end,
             item_id,
