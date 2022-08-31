@@ -25,6 +25,7 @@ const postAccountPayable = async (req, res) => {
         item_id,
         department_sub_id,
         delivery_note_number,
+        receive_amount,
         amount,
         bill_date,
         pay_date,
@@ -33,6 +34,7 @@ const postAccountPayable = async (req, res) => {
         pay_amount,
         limit_day,
         comment,
+        complete,
         uuid
     } = req.body;  
   
@@ -49,6 +51,7 @@ const postAccountPayable = async (req, res) => {
             item_id,
             department_sub_id,
             delivery_note_number,
+            receive_amount,
             amount,
             bill_date,
             pay_date,
@@ -57,6 +60,7 @@ const postAccountPayable = async (req, res) => {
             pay_amount,
             limit_day,
             comment,
+            complete,
             uuid,
             created_at,
             updated_at
@@ -101,7 +105,13 @@ const getAccountPayableAll = async (req, res) => {
     try {
         const { type, year } = req.params;
 
-        let data = await AccountPayable.findAllCondition(type, year);
+        let data = '';
+
+        if (type == 0) {
+            data = await AccountPayable.findAllConditionYearAll(year);
+        } else {
+            data = await AccountPayable.findAllConditionTypeYear(type, year);
+        } 
 
         if (data == '') {
             return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.');
@@ -109,7 +119,7 @@ const getAccountPayableAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+        return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
     }
 }
 
@@ -186,6 +196,7 @@ const updateAccountPayable = async (req, res) => {
             item_id,
             department_sub_id,
             delivery_note_number,
+            receive_amount,
             amount,
             bill_date,
             pay_date,
@@ -194,6 +205,7 @@ const updateAccountPayable = async (req, res) => {
             pay_amount,
             limit_day,
             comment,
+            complete,
             uuid,
         } = req.body;  
   
@@ -212,6 +224,7 @@ const updateAccountPayable = async (req, res) => {
             item_id,
             department_sub_id,
             delivery_note_number,
+            receive_amount,
             amount,
             bill_date,
             pay_date,
@@ -220,6 +233,7 @@ const updateAccountPayable = async (req, res) => {
             pay_amount,
             limit_day,
             comment,
+            complete,
             uuid,
             updated_at
         });
