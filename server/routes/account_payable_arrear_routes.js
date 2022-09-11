@@ -6,9 +6,11 @@ import verifyToken from '../middleware/verify_token';
 import {
     postAccountPayableArrear,
     getAccountPayableArrearAll,
+    getAccountPayableArrearAllByType,
     getAccountPayableArrear,
     updateAccountPayableArrear,
-    deleteAccountPayableArrear
+    deleteAccountPayableArrear,
+    deleteAccountPayableArrearByAP
 } from '../controllers/account_payable_arrear_controller';
 
 
@@ -21,6 +23,9 @@ router.route('/api/v1/account_payable_arrear/:id')
   .get(verifyToken, getAccountPayableArrear)
   .put(verifyToken, updateAccountPayableArrear)
   .delete(verifyToken, deleteAccountPayableArrear)
+
+router.route('/api/v1/account_payable_arrear/byap/:id').delete(verifyToken, deleteAccountPayableArrearByAP)
+router.route('/api/v1/account_payable_arrear/bytype/:type').get(verifyToken, getAccountPayableArrearAllByType)
 
   
 

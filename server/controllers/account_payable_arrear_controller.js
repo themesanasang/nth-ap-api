@@ -1,6 +1,7 @@
 'use strict'
 
 import CryptoJS from 'crypto-js';
+import date from 'date-and-time';
 import { AccountPayableArrear } from '../models';
 import helpers from '../helpers/util';
 
@@ -19,13 +20,14 @@ let {
 const postAccountPayableArrear = async (req, res) => {
     const { 
         account_payable_id,
-        arrear_date,
-        amount,
-        uuid_created
+        amount_arrear,
+        uuid
     } = req.body;  
   
     try {
-       
+        let arrear_date = date.format(new Date(), "YYYY-MM-DD");
+        let amount = amount_arrear
+        let uuid_created = uuid;
         await AccountPayableArrear.create({
             account_payable_id,
             arrear_date,
@@ -60,6 +62,28 @@ const getAccountPayableArrearAll = async (req, res) => {
     }
 }
 
+
+/**
+  * @description -This method returns detail of AccountPayableArrear all
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - AccountPayableArrear all
+  */
+ const getAccountPayableArrearAllByType = async (req, res) => {
+    try {
+        const { type } = req.params;
+
+        let data = await AccountPayableArrear.findAllByType(type);
+
+        if (!data) {
+            return errorResponse(res, 404, 'AccountPayableArrear_04', 'AccountPayableArrear does not exist.');
+        }
+
+        return res.status(200).json(data);
+    } catch (error) {
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
 
 
 
@@ -105,11 +129,10 @@ const updateAccountPayableArrear = async (req, res) => {
   
         let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
         let arrear_id = bytes.toString(CryptoJS.enc.Utf8);
-  
+
         let { 
             paid,
             paid_amount,
-            paid_date,
             uuid_complete
         } = req.body;  
   
@@ -118,6 +141,8 @@ const updateAccountPayableArrear = async (req, res) => {
         if (existingAccountPayableArrear['numrow'] == 0) {
             return errorResponse(res, 404, 'AccountPayableArrear_04', 'AccountPayableArrear does not exist.'); 
         }  
+
+        let paid_date = date.format(new Date(), "YYYY-MM-DD");
       
         let data = await AccountPayableArrear.update(arrear_id, {
             paid,
@@ -161,10 +186,41 @@ const updateAccountPayableArrear = async (req, res) => {
 }
 
 
+
+/**
+  * @description -This method removes AccountPayableArrear
+  * @param {object} req - The request payload sent from the router
+  * @param {object} res - The response payload sent AccountPayableArrear from the controller
+  * @returns {array} - removes AccountPayableArrear
+  */
+ const deleteAccountPayableArrearByAP = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+        let ap_id = bytes.toString(CryptoJS.enc.Utf8);
+
+        let existingAccountPayableArrear =  await AccountPayableArrear.countByAPID(ap_id);
+
+        if (existingAccountPayableArrear['numrow'] == 0) {
+            return errorResponse(res, 404, 'AccountPayableArrear_01', 'No AccountPayableArrear found', 'id'); 
+        }  
+
+        await AccountPayableArrear.destroyByAP(ap_id);
+
+        return res.status(200).json({"result":"success"});
+    } catch (error) {
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
 module.exports = {
     postAccountPayableArrear,
     getAccountPayableArrearAll,
+    getAccountPayableArrearAllByType,
     getAccountPayableArrear,
     updateAccountPayableArrear,
-    deleteAccountPayableArrear
+    deleteAccountPayableArrear,
+    deleteAccountPayableArrearByAP
 } 

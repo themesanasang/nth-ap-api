@@ -8,6 +8,7 @@ module.exports = knex => {
 
     const create = props => {
         return knex.insert(props)
+        .returning('account_payable_id')
         .into(tableName)
         .timeout(timeout)
     }

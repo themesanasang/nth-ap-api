@@ -10,6 +10,7 @@ import {
     getAccountPayableYear,
     getAccountPayable,
     updateAccountPayable,
+    updateAccountPayableComplete,
     deleteAccountPayable
 } from '../controllers/account_payable_controller';
 
@@ -26,6 +27,6 @@ router.route('/api/v1/account_payable/:id')
   .put(verifyToken, updateAccountPayable)
   .delete(verifyToken, deleteAccountPayable)
 
-  
+router.route('/api/v1/account_payable/complete/:id').put(verifyToken, updateAccountPayableComplete)
 
 module.exports = router;

@@ -44,7 +44,7 @@ const postAccountPayable = async (req, res) => {
         let created_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
 
-        await AccountPayable.create({
+        let data = await AccountPayable.create({
             payable_date,
             data_date,
             round_date_start,
@@ -68,7 +68,7 @@ const postAccountPayable = async (req, res) => {
             updated_at
         });
 
-        return res.status(200).json({"result":"success"});
+        return res.status(200).json(data);
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
@@ -250,6 +250,43 @@ const updateAccountPayable = async (req, res) => {
 
 
 /**
+  * @description -This method updates a AccountPayable's  complete
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload
+  * @returns {object} - AccountPayable complete
+  */
+ const updateAccountPayableComplete = async (req, res) => {
+    try {
+        const { id } = req.params;
+  
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+        let AccountPayable_id = bytes.toString(CryptoJS.enc.Utf8);
+  
+        let { 
+            complete,
+        } = req.body;  
+  
+        let existingAccountPayable =  await AccountPayable.countByID(AccountPayable_id);
+
+        if (existingAccountPayable['numrow'] == 0) {
+            return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.'); 
+        }  
+
+        let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+      
+        let data = await AccountPayable.update(AccountPayable_id, {
+            complete,
+            updated_at
+        });
+  
+        return res.status(200).json(data); 
+    } catch (error) {
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
+/**
   * @description -This method removes AccountPayable
   * @param {object} req - The request payload sent from the router
   * @param {object} res - The response payload sent AccountPayable from the controller
@@ -284,5 +321,6 @@ module.exports = {
     getAccountPayableYear,
     getAccountPayable,
     updateAccountPayable,
+    updateAccountPayableComplete,
     deleteAccountPayable
 } 
