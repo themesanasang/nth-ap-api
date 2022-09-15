@@ -19,7 +19,7 @@ let {
   */
 const postAccountPayableArrear = async (req, res) => {
     const { 
-        account_payable_id,
+        ap_code,
         amount_arrear,
         uuid
     } = req.body;  
@@ -29,13 +29,39 @@ const postAccountPayableArrear = async (req, res) => {
         let amount = amount_arrear
         let uuid_created = uuid;
         await AccountPayableArrear.create({
-            account_payable_id,
+            ap_code,
             arrear_date,
             amount,
             uuid_created
         });
 
         return res.status(200).json({"result":"success"});
+    } catch (error) {
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
+/**
+  * @description -This method get doc AccountPayableArrear count
+  * @param {object} req - The request payload sent from the router
+  * @param {object} res - The response payload sent AccountPayableArrear from the controller
+  * @returns {object} - AccountPayableArrear count
+  */
+ const getCountAccountPayableArrear = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (!ap_code) {
+            return errorResponse(res, 400, 'AccountPayableArrear_01', 'code is required', 'id');
+        }
+       
+        let existingAccountPayableArrear =  await AccountPayableArrear.countByAPCode(ap_code);
+
+        return res.status(200).json(existingAccountPayableArrear['numrow']);
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
@@ -198,15 +224,15 @@ const updateAccountPayableArrear = async (req, res) => {
         const { id } = req.params;
 
         let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
-        let ap_id = bytes.toString(CryptoJS.enc.Utf8);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
 
-        let existingAccountPayableArrear =  await AccountPayableArrear.countByAPID(ap_id);
+        let existingAccountPayableArrear =  await AccountPayableArrear.countByAPCode(ap_code);
 
         if (existingAccountPayableArrear['numrow'] == 0) {
             return errorResponse(res, 404, 'AccountPayableArrear_01', 'No AccountPayableArrear found', 'id'); 
         }  
 
-        await AccountPayableArrear.destroyByAP(ap_id);
+        await AccountPayableArrear.destroyByAP(ap_code);
 
         return res.status(200).json({"result":"success"});
     } catch (error) {
@@ -217,6 +243,7 @@ const updateAccountPayableArrear = async (req, res) => {
 
 module.exports = {
     postAccountPayableArrear,
+    getCountAccountPayableArrear,
     getAccountPayableArrearAll,
     getAccountPayableArrearAllByType,
     getAccountPayableArrear,

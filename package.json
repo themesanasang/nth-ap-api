@@ -25,6 +25,7 @@
     "knex": "^2.1.0",
     "knex-on-duplicate-update": "^2.3.0",
     "mysql2": "^2.3.3",
+    "nanoid": "^3.0.0",
     "uuidv4": "^6.2.13",
     "winston": "^3.8.1"
   },

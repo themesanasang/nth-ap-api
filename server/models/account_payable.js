@@ -8,15 +8,14 @@ module.exports = knex => {
 
     const create = props => {
         return knex.insert(props)
-        .returning('account_payable_id')
         .into(tableName)
         .timeout(timeout)
     }
 
 
-    const countByID = (account_payable_id) => knex.count('account_payable_id AS numrow')
+    const countByCode = (ap_code) => knex.count('ap_code AS numrow')
     .from(tableName)
-    .whereRaw('account_payable_id = ?', [account_payable_id])
+    .whereRaw('ap_code = ?', [ap_code])
     .first()
     .timeout(timeout)
 
@@ -104,7 +103,7 @@ module.exports = knex => {
     .timeout(timeout)
 
 
-    const findOne = (account_payable_id) => knex.select(
+    const findOne = (ap_code) => knex.select(
         'ap_account_payable.*'
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname'
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
@@ -122,35 +121,35 @@ module.exports = knex => {
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
     .leftJoin('ap_user', 'ap_user.uuid', '=', 'ap_account_payable.uuid')
-    .whereRaw('ap_account_payable.account_payable_id = ?', [account_payable_id])
+    .whereRaw('ap_account_payable.ap_code = ?', [ap_code])
     .timeout(timeout)
 
 
-    const update = (account_payable_id, props) => {
+    const updateByCode = (ap_code, props) => {
         return knex.update(props)
         .from(tableName)
-        .whereRaw('account_payable_id = ?', [account_payable_id])
+        .whereRaw('ap_code = ?', [ap_code])
         .timeout(timeout)
     }
 
 
-    const destroy = account_payable_id => knex.del()
+    const destroyByCode = ap_code => knex.del()
     .from(tableName)
-    .whereRaw('account_payable_id = ?', [account_payable_id])
+    .whereRaw('ap_code = ?', [ap_code])
     .timeout(timeout)
 
 
     return {
         name, 
         create,
-        countByID,
+        countByCode,
         findYearAll,
         findAllConditionYearAll,
         findAllConditionTypeYear,
         findAll,
         findOne,
-        update,
-        destroy
+        updateByCode,
+        destroyByCode
     }
     
 }

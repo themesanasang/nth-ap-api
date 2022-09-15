@@ -1,6 +1,7 @@
 'use strict'
 
 import CryptoJS from 'crypto-js';
+import { nanoid } from 'nanoid';
 import date from 'date-and-time';
 import { AccountPayable } from '../models';
 import helpers from '../helpers/util';
@@ -40,11 +41,19 @@ const postAccountPayable = async (req, res) => {
     } = req.body;  
   
     try {
+        let ap_code = nanoid(15);
         let data_date = date.format(new Date(), "YYYY-MM-DD");
+       
+        let complete_date = null;
+        if (complete == 'Y') {
+            complete_date = date.format(new Date(), "YYYY-MM-DD");
+        }
+
         let created_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
 
-        let data = await AccountPayable.create({
+        await AccountPayable.create({
+            ap_code,
             payable_date,
             data_date,
             round_date_start,
@@ -63,12 +72,13 @@ const postAccountPayable = async (req, res) => {
             limit_day,
             comment,
             complete,
+            complete_date,
             uuid,
             created_at,
             updated_at
         });
 
-        return res.status(200).json(data);
+        return res.status(200).json(ap_code);
     } catch (error) {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
@@ -159,13 +169,13 @@ const getAccountPayable = async (req, res) => {
         const { id } = req.params;
 
         let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
-        let AccountPayable_id = bytes.toString(CryptoJS.enc.Utf8);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
 
-        if (!AccountPayable_id) {
-            return errorResponse(res, 400, 'AccountPayable_01', 'id is required', 'id');
+        if (!ap_code) {
+            return errorResponse(res, 400, 'AccountPayable_01', 'ap_code is required', 'ap_code');
         }
 
-        let data = await AccountPayable.findOne(AccountPayable_id);
+        let data = await AccountPayable.findOne(ap_code);
 
         if (data == '') {
             return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.');
@@ -189,7 +199,7 @@ const updateAccountPayable = async (req, res) => {
         const { id } = req.params;
   
         let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
-        let AccountPayable_id = bytes.toString(CryptoJS.enc.Utf8);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
             payable_date,
@@ -212,7 +222,7 @@ const updateAccountPayable = async (req, res) => {
             uuid,
         } = req.body;  
   
-        let existingAccountPayable =  await AccountPayable.countByID(AccountPayable_id);
+        let existingAccountPayable =  await AccountPayable.countByCode(ap_code);
 
         if (existingAccountPayable['numrow'] == 0) {
             return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.'); 
@@ -220,7 +230,7 @@ const updateAccountPayable = async (req, res) => {
 
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
       
-        let data = await AccountPayable.update(AccountPayable_id, {
+        let data = await AccountPayable.updateByCode(ap_code, {
             payable_date,
             round_date_start,
             round_date_end,
@@ -260,22 +270,24 @@ const updateAccountPayable = async (req, res) => {
         const { id } = req.params;
   
         let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
-        let AccountPayable_id = bytes.toString(CryptoJS.enc.Utf8);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
   
         let { 
             complete,
         } = req.body;  
   
-        let existingAccountPayable =  await AccountPayable.countByID(AccountPayable_id);
+        let existingAccountPayable =  await AccountPayable.countByCode(ap_code);
 
         if (existingAccountPayable['numrow'] == 0) {
             return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.'); 
         }  
 
+        let complete_date = date.format(new Date(), "YYYY-MM-DD");
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
       
-        let data = await AccountPayable.update(AccountPayable_id, {
+        let data = await AccountPayable.updateByCode(ap_code, {
             complete,
+            complete_date,
             updated_at
         });
   
@@ -297,19 +309,19 @@ const updateAccountPayable = async (req, res) => {
         const { id } = req.params;
 
         let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
-        let AccountPayable_id = bytes.toString(CryptoJS.enc.Utf8);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
 
-        let existingAccountPayable =  await AccountPayable.countByID(AccountPayable_id);
+        let existingAccountPayable =  await AccountPayable.countByCode(ap_code);
 
         if (existingAccountPayable['numrow'] == 0) {
             return errorResponse(res, 404, 'AccountPayable_01', 'No AccountPayable found', 'id'); 
         }  
 
-        await AccountPayable.destroy(AccountPayable_id);
+        await AccountPayable.destroyByCode(ap_code);
 
         return res.status(200).json({"result":"success"});
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+        return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
     }
 }
 

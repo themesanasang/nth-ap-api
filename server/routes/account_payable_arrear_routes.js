@@ -5,6 +5,7 @@ let router = express.Router();
 import verifyToken from '../middleware/verify_token';
 import {
     postAccountPayableArrear,
+    getCountAccountPayableArrear,
     getAccountPayableArrearAll,
     getAccountPayableArrearAllByType,
     getAccountPayableArrear,
@@ -26,7 +27,7 @@ router.route('/api/v1/account_payable_arrear/:id')
 
 router.route('/api/v1/account_payable_arrear/byap/:id').delete(verifyToken, deleteAccountPayableArrearByAP)
 router.route('/api/v1/account_payable_arrear/bytype/:type').get(verifyToken, getAccountPayableArrearAllByType)
-
+router.route('/api/v1/account_payable_arrear/count/:id').get(verifyToken, getCountAccountPayableArrear)
   
 
 module.exports = router;
