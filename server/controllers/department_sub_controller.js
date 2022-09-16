@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { DepartmentSub } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -44,8 +44,11 @@ const postDepartmentSub = async (req, res) => {
             status
         });
 
+        eventLogger.info('postDepartmentSub register '+ department_sub_name +' to system');
+
         return res.status(200).json(department_sub_code);
     } catch (error) {
+        eventLogger.error('postDepartmentSub Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -67,6 +70,7 @@ const getDepartmentSubAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getDepartmentSubAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
     }
 }
@@ -97,6 +101,7 @@ const getDepartmentSub = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getDepartmentSub Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -134,9 +139,12 @@ const updateDepartmentSub = async (req, res) => {
             department_sub_name,
             status
         });
+
+        eventLogger.info('updateDepartmentSub update detail department_sub_id:'+ department_sub_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateDepartmentSub Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -173,8 +181,11 @@ const updateDepartmentSub = async (req, res) => {
             await DepartmentSub.destroy(department_sub_id);
         }
 
+        eventLogger.info('deleteDepartmentSub delete department_sub_id:'+ department_sub_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteDepartmentSub Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

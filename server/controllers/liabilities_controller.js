@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { Liabilities } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -36,8 +36,11 @@ const postLiabilities = async (req, res) => {
             status
         });
 
+        eventLogger.info('postLiabilities register '+ liabilities_name +' to system');
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('postLiabilities Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -59,6 +62,7 @@ const getLiabilitiesAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getLiabilitiesAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -89,6 +93,7 @@ const getLiabilities = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getLiabilities Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -124,9 +129,12 @@ const updateLiabilities = async (req, res) => {
             liabilities_name,
             status
         });
+
+        eventLogger.info('updateLiabilities update detail liabilities_id:'+ liabilities_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateLiabilities Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -163,8 +171,11 @@ const updateLiabilities = async (req, res) => {
             await Liabilities.destroy(liabilities_id);
         }
 
+        eventLogger.info('deleteLiabilities delete liabilities_id:'+ liabilities_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteLiabilities Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

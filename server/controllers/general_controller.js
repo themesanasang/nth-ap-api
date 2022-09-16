@@ -3,6 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { General } from '../models';
 import helpers from '../helpers/util';
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -33,8 +34,11 @@ const postGeneral = async (req, res) => {
             affiliation
         });
 
+        eventLogger.info('postGeneral register data to system');
+
         return res.status(200).json(code);
     } catch (error) {
+        eventLogger.error('postGeneral Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error ');
     }
 }
@@ -56,6 +60,7 @@ const getGeneral = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getGeneral Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -95,9 +100,12 @@ const getGeneral = async (req, res) => {
             mobile,
             affiliation
         });
+
+        eventLogger.info('updateGeneral update detail g_id:'+ g_id);
   
         return res.status(200).json(code); 
     } catch (error) {
+        eventLogger.error('updateGeneral Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

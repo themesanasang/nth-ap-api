@@ -4,6 +4,7 @@ import CryptoJS from 'crypto-js';
 import date from 'date-and-time';
 import { Account } from '../models';
 import helpers from '../helpers/util';
+import { eventLogger } from '../helpers/logsApp';
 
 
 let {
@@ -54,8 +55,11 @@ const postAccount = async (req, res) => {
             updated_at
         });
 
+        eventLogger.info('postAccount register '+ account +' to system');
+
         return res.status(200).json(account);
     } catch (error) {
+        eventLogger.error('postAccount Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -77,6 +81,7 @@ const getAccountAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -107,6 +112,7 @@ const getAccount = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccount Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -151,9 +157,12 @@ const updateAccount = async (req, res) => {
             status,
             updated_at
         });
+
+        eventLogger.info('updateAccount update detail account_id:'+ account_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateAccount Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -192,8 +201,11 @@ const updateAccount = async (req, res) => {
             await Account.destroy(account_id);
         }
 
+        eventLogger.info('deleteAccount delete account_id:'+ account_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteAccount Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

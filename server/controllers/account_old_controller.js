@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { AccountOld } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -37,8 +37,11 @@ const postAccountOld = async (req, res) => {
             account_old_name,
         });
 
+        eventLogger.info('postAccountOld register old '+ account_old +' to system');
+
         return res.status(200).json(account_id);
     } catch (error) {
+        eventLogger.error('postAccountOld Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
     }
 }
@@ -60,6 +63,7 @@ const postAccountOld = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountOldAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -90,6 +94,7 @@ const postAccountOld = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountOldOne Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -124,9 +129,12 @@ const postAccountOld = async (req, res) => {
             account_old,
             account_old_name
         });
+
+        eventLogger.info('updateAccountOld update detail account_old_id:'+ account_old_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateAccountOld Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -153,8 +161,11 @@ const postAccountOld = async (req, res) => {
 
         await AccountOld.destroy(account_old_id);
 
+        eventLogger.info('deleteAccountOld delete account_old_id:'+ account_old_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteAccountOld Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

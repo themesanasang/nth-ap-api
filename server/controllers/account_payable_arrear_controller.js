@@ -4,6 +4,7 @@ import CryptoJS from 'crypto-js';
 import date from 'date-and-time';
 import { AccountPayableArrear } from '../models';
 import helpers from '../helpers/util';
+import { eventLogger } from '../helpers/logsApp';
 
 
 let {
@@ -35,8 +36,11 @@ const postAccountPayableArrear = async (req, res) => {
             uuid_created
         });
 
+        eventLogger.info('postAccountPayableArrear register ap_code '+ ap_code +' to system');
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('postAccountPayableArrear Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -63,6 +67,7 @@ const postAccountPayableArrear = async (req, res) => {
 
         return res.status(200).json(existingAccountPayableArrear['numrow']);
     } catch (error) {
+        eventLogger.error('getCountAccountPayableArrear Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -84,6 +89,7 @@ const getAccountPayableArrearAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountPayableArrearAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -107,6 +113,7 @@ const getAccountPayableArrearAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountPayableArrearAllByType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -138,6 +145,7 @@ const getAccountPayableArrear = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountPayableArrear Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -176,9 +184,12 @@ const updateAccountPayableArrear = async (req, res) => {
             paid_date,
             uuid_complete
         });
+
+        eventLogger.info('updateAccountPayableArrear update detail arrear_id:'+ arrear_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateAccountPayableArrear Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -205,8 +216,11 @@ const updateAccountPayableArrear = async (req, res) => {
 
         await AccountPayableArrear.destroy(arrear_id);
 
+        eventLogger.info('deleteAccountPayableArrear delete arrear_id:'+ arrear_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteAccountPayableArrear Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -234,8 +248,11 @@ const updateAccountPayableArrear = async (req, res) => {
 
         await AccountPayableArrear.destroyByAP(ap_code);
 
+        eventLogger.info('deleteAccountPayableArrearByAP delete ap_code:'+ ap_code)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteAccountPayableArrearByAP Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

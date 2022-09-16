@@ -3,6 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { PayableList } from '../models';
 import helpers from '../helpers/util';
+import { eventLogger } from '../helpers/logsApp';
 
 
 let {
@@ -36,8 +37,11 @@ const postPayableList = async (req, res) => {
             status
         });
 
+        eventLogger.info('postPayableList register payable_id:'+ payable_id +', payable_type_id:'+payable_type_id +' to system');
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('postPayableList Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -59,6 +63,7 @@ const getPayableListAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getPayableListAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -89,6 +94,7 @@ const getPayableList = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getPayableList Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -124,9 +130,12 @@ const updatePayableList = async (req, res) => {
             payable_type_id,
             status
         });
+
+        eventLogger.info('updatePayableList update detail payable_id:'+ payable_id +', payable_type_id:'+payable_type_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updatePayableList Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -163,8 +172,11 @@ const updatePayableList = async (req, res) => {
             await PayableList.destroy(payable_list_id);
         }
 
+        eventLogger.info('deletePayableList delete payable_list_id:'+ payable_list_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deletePayableList Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

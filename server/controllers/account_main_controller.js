@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { AccountMain } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -42,8 +42,11 @@ const postAccountMain = async (req, res) => {
             status
         });
 
+        eventLogger.info('postAccountMain register '+ acc_main_code +' to system');
+
         return res.status(200).json(gf_code);
     } catch (error) {
+        eventLogger.error('postAccountMain Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -65,6 +68,7 @@ const getAccountMainAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountMainAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -95,6 +99,7 @@ const getAccountMain = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountMain Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -130,9 +135,12 @@ const updateAccountMain = async (req, res) => {
             acc_main_name,
             status
         });
+
+        eventLogger.info('updateAccountMain update detail acc_main_id:'+ acc_main_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateAccountMain Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -169,8 +177,11 @@ const updateAccountMain = async (req, res) => {
             await AccountMain.destroy(acc_main_id);
         }
 
+        eventLogger.info('deleteAccountMain delete acc_main_id:'+ acc_main_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteAccountMain Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { PayableType } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -38,8 +38,11 @@ const postPayableType = async (req, res) => {
             status
         });
 
+        eventLogger.info('postPayableType register '+ payable_type_name +' to system');
+
         return res.status(200).json(payable_type_name);
     } catch (error) {
+        eventLogger.error('postPayableType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -61,6 +64,7 @@ const getPayableTypeAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getPayableTypeAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -91,6 +95,7 @@ const getPayableType = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getPayableType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -128,9 +133,12 @@ const updatePayableType = async (req, res) => {
             status_arrear,
             status
         });
+
+        eventLogger.info('update detail payable_type_id:'+ payable_type_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updatePayableType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -167,8 +175,11 @@ const updatePayableType = async (req, res) => {
             await PayableType.destroy(payable_type_id);
         }
 
+        eventLogger.info('delete deletePayableType payable_type_id:'+ payable_type_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deletePayableType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

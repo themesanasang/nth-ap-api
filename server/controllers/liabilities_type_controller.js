@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { LiabilitiesType } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -34,8 +34,11 @@ const postLiabilitiesType = async (req, res) => {
             status
         });
 
+        eventLogger.info('postLiabilitiesType register '+ liabilities_type_name +' to system');
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('postLiabilitiesType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -57,6 +60,7 @@ const getLiabilitiesTypeAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getLiabilitiesTypeAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -87,6 +91,7 @@ const getLiabilitiesType = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getLiabilitiesType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -120,9 +125,12 @@ const updateLiabilitiesType = async (req, res) => {
             liabilities_type_name,
             status
         });
+
+        eventLogger.info('updateLiabilitiesType update detail liabilities_type_id:'+ liabilities_type_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateLiabilitiesType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -159,8 +167,11 @@ const updateLiabilitiesType = async (req, res) => {
             await LiabilitiesType.destroy(liabilities_type_id);
         }
 
+        eventLogger.info('deleteLiabilitiesType delete liabilities_type_id:'+ liabilities_type_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteLiabilitiesType Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

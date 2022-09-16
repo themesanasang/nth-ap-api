@@ -6,7 +6,7 @@ import { v4 as uuidv4  } from 'uuid';
 import isEmpty from 'just-is-empty';
 import { User } from '../models';
 import helpers from '../helpers/util';
-
+import { authLogger, eventLogger } from '../helpers/logsApp';
 
 let {
   hashPassword,
@@ -42,16 +42,21 @@ const loginUser = async (req, res) => {
         if (match) {
             let user = dataUser[0];
             let token = createToken(user);
+
+            const ip = (req.headers["X-Forwarded-For"] || req.headers["x-forwarded-for"] || '').split(',')[0] || req.client.remoteAddress;
+            authLogger.info('ip: '+ip+' username: '+ dataUser[0].username+' login to system');
             
             res.status(200).json({
               token: token
             });
             
         } else {
-            return errorResponse(res, 400, 'USR_01', 'data is invalid. user');
+          authLogger.error('Username or Password is invalid');
+          return errorResponse(res, 400, 'USR_01', 'data is invalid. user');
         }
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+      authLogger.error('Req Internal Server Error: ' + error);
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 
@@ -79,14 +84,19 @@ const loginSocial = async (req, res) => {
     if (match) {
       let user = dataUser[0];
       let token = createToken(user);
+
+      const ip = (req.headers["X-Forwarded-For"] || req.headers["x-forwarded-for"] || '').split(',')[0] || req.client.remoteAddress;
+      authLogger.info('ip: '+ip+' username: '+ dataUser[0].username+' login by social to system');
       
       res.status(200).json({
         token: token
       });
     } else {
+      authLogger.error('Username or Password is invalid');
       return errorResponse(res, 400, 'USR_01', 'data is invalid. user');
     }
   } catch (error) {
+    authLogger.error('Req Internal Server Error: ' + error);
     return errorResponse(res, 500, 'Error', 'Internal Server Error');
   }
 }
@@ -126,9 +136,12 @@ const postUser = async (req, res) => {
             updated_at
         });
 
+        eventLogger.info('postUser register '+ username +' to system');
+
         return res.status(200).json(user);
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+      eventLogger.error('postUser Req Internal Server Error: ' + error);
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 
@@ -176,9 +189,12 @@ const postUser = async (req, res) => {
           updated_at
       });
 
+      eventLogger.info('postUser register '+ username +' to system');
+
       return res.status(200).json(user);
   } catch (error) {
-      return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    eventLogger.error('postUser Req Internal Server Error: ' + error);
+    return errorResponse(res, 500, 'Error', 'Internal Server Error');
   }
 }
 
@@ -216,8 +232,11 @@ const postUserSocial = async (req, res) => {
       updated_at
     });
 
+    eventLogger.info('postUser register '+ username +' by social to system');
+
     return res.status(200).json(user);
   } catch (error) {
+    eventLogger.error('postUser Req Internal Server Error: ' + error);
     return errorResponse(res, 500, 'Error', 'Internal Server Error');
   }
 }
@@ -230,17 +249,18 @@ const postUserSocial = async (req, res) => {
   * @returns {object} - user all
   */
 const getUserAll = async (req, res) => {
-    try {
-      let data = await User.findAll();
+  try {
+    let data = await User.findAll();
 
-      if (!data) {
-        return errorResponse(res, 404, 'user_04', 'user does not exist.');
-      }
-
-      return res.status(200).json(data);
-    } catch (error) {
-      return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    if (!data) {
+      return errorResponse(res, 404, 'user_04', 'user does not exist.');
     }
+
+    return res.status(200).json(data);
+  } catch (error) {
+    eventLogger.error('getUserAll Req Internal Server Error: ' + error);
+    return errorResponse(res, 500, 'Error', 'Internal Server Error');
+  }
 }
 
 
@@ -251,26 +271,27 @@ const getUserAll = async (req, res) => {
   * @returns {object} - User detail
   */
 const getUser = async (req, res) => {
-    try {
-      const { id } = req.params;
-  
-      let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
-      let uuid = bytes.toString(CryptoJS.enc.Utf8);
-  
-      if (!uuid) {
-        return errorResponse(res, 400, 'user_01', 'id is required', 'id');
-      }
+  try {
+    const { id } = req.params;
 
-      let data = await User.findOne(uuid);
-  
-      if (data == '') {
-        return errorResponse(res, 404, 'user_04', 'user does not exist.');
-      }
-  
-      return res.status(200).json(data);
-    } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+    let uuid = bytes.toString(CryptoJS.enc.Utf8);
+
+    if (!uuid) {
+      return errorResponse(res, 400, 'user_01', 'id is required', 'id');
     }
+
+    let data = await User.findOne(uuid);
+
+    if (data == '') {
+      return errorResponse(res, 404, 'user_04', 'user does not exist.');
+    }
+
+    return res.status(200).json(data);
+  } catch (error) {
+    eventLogger.error('getUser Req Internal Server Error: ' + error);
+    return errorResponse(res, 500, 'Error', 'Internal Server Error');
+  }
 }
 
 
@@ -309,10 +330,13 @@ const updateUser = async (req, res) => {
             status, 
             updated_at
         });
+
+        eventLogger.info('updateUser update detail id:'+ uuid);
   
         return res.status(200).json(data); 
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+      eventLogger.error('updateUser Req Internal Server Error: ' + error);
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 
@@ -371,10 +395,12 @@ const updateUser = async (req, res) => {
         });
       }
      
+      eventLogger.info('updateUser2 update detail id:'+ uuid);
 
       return res.status(200).json(data); 
   } catch (error) {
-      return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    eventLogger.error('updateUser2 Req Internal Server Error: ' + error);
+    return errorResponse(res, 500, 'Error', 'Internal Server Error');
   }
 }
 
@@ -413,9 +439,12 @@ const deleteUser = async (req, res) => {
       } else {
         await User.destroy(uuid);
       }
+
+      eventLogger.info('deleteUser delete id:'+ uuid)
   
       return res.status(200).json({"result":"success"});
     } catch (error) {
+      eventLogger.error('deleteUser Req Internal Server Error: ' + error);
       return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

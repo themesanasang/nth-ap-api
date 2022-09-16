@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { EmpReport } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
   errorResponse
@@ -41,9 +41,12 @@ const postEmpEmpReport = async (req, res) => {
             status
         });
 
+        eventLogger.info('postEmpEmpReport register '+ name +' to system');
+
         return res.status(200).json(data);
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+      eventLogger.error('postEmpEmpReport Req Internal Server Error: ' + error);
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 
@@ -65,6 +68,7 @@ const getEmpReportAll = async (req, res) => {
 
       return res.status(200).json(data);
     } catch (error) {
+      eventLogger.error('getEmpReportAll Req Internal Server Error: ' + error);
       return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -95,7 +99,8 @@ const getEmpReport = async (req, res) => {
   
       return res.status(200).json(data);
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+      eventLogger.error('getEmpReport Req Internal Server Error: ' + error);
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 
@@ -134,10 +139,13 @@ const updateEmpReport = async (req, res) => {
             title3,
             status
         });
+
+        eventLogger.info('updateEmpReport update detail idemp:'+ idemp);
   
         return res.status(200).json(data); 
     } catch (error) {
-        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+      eventLogger.error('updateEmpReport Req Internal Server Error: ' + error);
+      return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 
@@ -162,9 +170,12 @@ const deleteEmpReport = async (req, res) => {
       }  
 
       await EmpReport.destroy(idemp);
+
+      eventLogger.info('deleteEmpReport delete idemp:'+ idemp)
   
       return res.status(200).json({"result":"success"});
     } catch (error) {
+      eventLogger.error('deleteEmpReport Req Internal Server Error: ' + error);
       return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

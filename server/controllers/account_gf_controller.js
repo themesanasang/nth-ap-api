@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { AccountGF } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -40,8 +40,11 @@ const postAccountGF = async (req, res) => {
             gf_name,
         });
 
+        eventLogger.info('postAccountGF register '+ gf_code +' to system');
+
         return res.status(200).json(gf_code);
     } catch (error) {
+        eventLogger.error('postAccountGF Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -63,6 +66,7 @@ const getAccountGFAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountGFAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -93,6 +97,7 @@ const getAccountGF = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountGF Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -126,9 +131,12 @@ const updateAccountGF = async (req, res) => {
             gf_code,
             gf_name,
         });
+
+        eventLogger.info('updateAccountGF update detail gf_id:'+ gf_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateAccountGF Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -155,6 +163,8 @@ const updateAccountGF = async (req, res) => {
 
         let countWork = await AccountGF.countWork(gf_id);
 
+        eventLogger.info('deleteAccountGF delete gf_id:'+ gf_id)
+
         if (countWork['numrow'] > 0) {
             return res.status(400).json({"result":"failure"});
         } else {
@@ -162,6 +172,7 @@ const updateAccountGF = async (req, res) => {
             return res.status(200).json({"result":"success"});
         }
     } catch (error) {
+        eventLogger.error('deleteAccountGF Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

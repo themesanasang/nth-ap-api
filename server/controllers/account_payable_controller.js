@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import date from 'date-and-time';
 import { AccountPayable } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -78,8 +78,11 @@ const postAccountPayable = async (req, res) => {
             updated_at
         });
 
+        eventLogger.info('postAccountPayable register ap_code '+ ap_code +' to system');
+
         return res.status(200).json(ap_code);
     } catch (error) {
+        eventLogger.error('postAccountPayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -101,6 +104,7 @@ const getAccountPayableAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountPayableAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -131,6 +135,7 @@ const getAccountPayableAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountPayableCondition Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
     }
 }
@@ -153,6 +158,7 @@ const getAccountPayableYear = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountPayableYear Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -183,6 +189,7 @@ const getAccountPayable = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getAccountPayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -251,9 +258,12 @@ const updateAccountPayable = async (req, res) => {
             uuid,
             updated_at
         });
+
+        eventLogger.info('updateAccountPayable update detail ap_code:'+ ap_code);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateAccountPayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -290,9 +300,12 @@ const updateAccountPayable = async (req, res) => {
             complete_date,
             updated_at
         });
+
+        eventLogger.info('updateAccountPayableComplete update detail ap_code:'+ ap_code);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateAccountPayableComplete Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -319,8 +332,11 @@ const updateAccountPayable = async (req, res) => {
 
         await AccountPayable.destroyByCode(ap_code);
 
+        eventLogger.info('deleteAccountPayable delete ap_code:'+ ap_code)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteAccountPayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
     }
 }

@@ -3,7 +3,7 @@
 import CryptoJS from 'crypto-js';
 import { Department } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -42,8 +42,11 @@ const postDepartment = async (req, res) => {
             status
         });
 
+        eventLogger.info('postDepartment register '+ department_name +' to system');
+
         return res.status(200).json(department_code);
     } catch (error) {
+        eventLogger.error('postDepartment Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -65,6 +68,7 @@ const getDepartmentAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getDepartmentAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -95,6 +99,7 @@ const getDepartment = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getDepartment Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -130,9 +135,12 @@ const updateDepartment = async (req, res) => {
             department_name,
             status
         });
+
+        eventLogger.info('updateDepartment update detail department_id:'+ department_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateDepartment Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -169,8 +177,11 @@ const updateDepartment = async (req, res) => {
             await Department.destroy(department_id);
         }
 
+        eventLogger.info('deleteDepartment delete department_id:'+ department_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteDepartment Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

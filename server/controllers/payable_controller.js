@@ -4,6 +4,7 @@ import CryptoJS from 'crypto-js';
 import date from 'date-and-time';
 import { Payable } from '../models';
 import helpers from '../helpers/util';
+import { eventLogger } from '../helpers/logsApp';
 
 
 let {
@@ -44,8 +45,11 @@ const postPayable = async (req, res) => {
             updated_at
         });
 
+        eventLogger.info('postPayable register '+ name +' to system');
+
         return res.status(200).json(name);
     } catch (error) {
+        eventLogger.error('postPayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -67,6 +71,7 @@ const getPayableAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getPayableAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -97,6 +102,7 @@ const getPayable = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getPayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -137,9 +143,12 @@ const updatePayable = async (req, res) => {
             status,
             updated_at
         });
+
+        eventLogger.info('updatePayable update detail payable_id:'+ payable_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updatePayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -178,8 +187,11 @@ const updatePayable = async (req, res) => {
             await Payable.destroy(payable_id);
         }
 
+        eventLogger.info('deletePayable delete payable_id:'+ payable_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deletePayable Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }

@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js';
 import date from 'date-and-time';
 import { Item } from '../models';
 import helpers from '../helpers/util';
-
+import { eventLogger } from '../helpers/logsApp';
 
 let {
     errorResponse
@@ -44,8 +44,11 @@ const postItem = async (req, res) => {
             updated_at
         });
 
+        eventLogger.info('postItem register '+ item_name +' to system');
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('postItem Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -67,6 +70,7 @@ const getItemAll = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getItemAll Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -97,6 +101,7 @@ const getItem = async (req, res) => {
 
         return res.status(200).json(data);
     } catch (error) {
+        eventLogger.error('getItem Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -137,9 +142,12 @@ const updateItem = async (req, res) => {
             status,
             updated_at
         });
+
+        eventLogger.info('updateItem update detail item_id:'+ item_id);
   
         return res.status(200).json(data); 
     } catch (error) {
+        eventLogger.error('updateItem Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
@@ -178,8 +186,11 @@ const updateItem = async (req, res) => {
             await Item.destroy(item_id);
         }
 
+        eventLogger.info('deleteItem delete item_id:'+ item_id)
+
         return res.status(200).json({"result":"success"});
     } catch (error) {
+        eventLogger.error('deleteItem Req Internal Server Error: ' + error);
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
