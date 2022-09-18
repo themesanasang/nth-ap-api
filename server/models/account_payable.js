@@ -29,7 +29,16 @@ module.exports = knex => {
 
 
     const findAll = () => knex.select(
-        'ap_account_payable.*'
+        'ap_account_payable.account_payable_id', 'ap_account_payable.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable.data_date, "%Y-%m-%d") AS data_date'), knex.raw('DATE_FORMAT(ap_account_payable.payable_date, "%Y-%m-%d") AS payable_date')
+        , knex.raw('DATE_FORMAT(ap_account_payable.round_date_start, "%Y-%m-%d") AS round_date_start'), knex.raw('DATE_FORMAT(ap_account_payable.round_date_end, "%Y-%m-%d") AS round_date_end')
+        , 'ap_account_payable.item_id', 'ap_account_payable.department_sub_id', 'ap_account_payable.book_number'
+        , 'ap_account_payable.delivery_note_number', 'ap_account_payable.receive_amount', 'ap_account_payable.amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable.pay_date, "%Y-%m-%d") AS pay_date')
+        , 'ap_account_payable.payment_voucher', 'ap_account_payable.invoice_no', 'ap_account_payable.pay_amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
+        , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname'
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 
@@ -51,7 +60,16 @@ module.exports = knex => {
 
 
     const findAllConditionYearAll = (year) => knex.select(
-        'ap_account_payable.*'
+        'ap_account_payable.account_payable_id', 'ap_account_payable.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable.data_date, "%Y-%m-%d") AS data_date'), knex.raw('DATE_FORMAT(ap_account_payable.payable_date, "%Y-%m-%d") AS payable_date')
+        , knex.raw('DATE_FORMAT(ap_account_payable.round_date_start, "%Y-%m-%d") AS round_date_start'), knex.raw('DATE_FORMAT(ap_account_payable.round_date_end, "%Y-%m-%d") AS round_date_end')
+        , 'ap_account_payable.item_id', 'ap_account_payable.department_sub_id', 'ap_account_payable.book_number'
+        , 'ap_account_payable.delivery_note_number', 'ap_account_payable.receive_amount', 'ap_account_payable.amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable.pay_date, "%Y-%m-%d") AS pay_date')
+        , 'ap_account_payable.payment_voucher', 'ap_account_payable.invoice_no', 'ap_account_payable.pay_amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
+        , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
         , knex.raw('(ap_account_payable.amount - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
@@ -77,7 +95,16 @@ module.exports = knex => {
 
 
     const findAllConditionTypeYear = (type, year) => knex.select(
-        'ap_account_payable.*'
+        'ap_account_payable.account_payable_id', 'ap_account_payable.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable.data_date, "%Y-%m-%d") AS data_date'), knex.raw('DATE_FORMAT(ap_account_payable.payable_date, "%Y-%m-%d") AS payable_date')
+        , knex.raw('DATE_FORMAT(ap_account_payable.round_date_start, "%Y-%m-%d") AS round_date_start'), knex.raw('DATE_FORMAT(ap_account_payable.round_date_end, "%Y-%m-%d") AS round_date_end')
+        , 'ap_account_payable.item_id', 'ap_account_payable.department_sub_id', 'ap_account_payable.book_number'
+        , 'ap_account_payable.delivery_note_number', 'ap_account_payable.receive_amount', 'ap_account_payable.amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable.pay_date, "%Y-%m-%d") AS pay_date')
+        , 'ap_account_payable.payment_voucher', 'ap_account_payable.invoice_no', 'ap_account_payable.pay_amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
+        , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
         , knex.raw('(ap_account_payable.amount - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
@@ -104,7 +131,16 @@ module.exports = knex => {
 
 
     const findOne = (ap_code) => knex.select(
-        'ap_account_payable.*'
+        'ap_account_payable.account_payable_id', 'ap_account_payable.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable.data_date, "%Y-%m-%d") AS data_date'), knex.raw('DATE_FORMAT(ap_account_payable.payable_date, "%Y-%m-%d") AS payable_date')
+        , knex.raw('DATE_FORMAT(ap_account_payable.round_date_start, "%Y-%m-%d") AS round_date_start'), knex.raw('DATE_FORMAT(ap_account_payable.round_date_end, "%Y-%m-%d") AS round_date_end')
+        , 'ap_account_payable.item_id', 'ap_account_payable.department_sub_id', 'ap_account_payable.book_number'
+        , 'ap_account_payable.delivery_note_number', 'ap_account_payable.receive_amount', 'ap_account_payable.amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable.pay_date, "%Y-%m-%d") AS pay_date')
+        , 'ap_account_payable.payment_voucher', 'ap_account_payable.invoice_no', 'ap_account_payable.pay_amount'
+        , knex.raw('DATE_FORMAT(ap_account_payable.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
+        , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname'
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 

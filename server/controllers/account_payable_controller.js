@@ -337,7 +337,7 @@ const updateAccountPayable = async (req, res) => {
         return res.status(200).json({"result":"success"});
     } catch (error) {
         eventLogger.error('deleteAccountPayable Req Internal Server Error: ' + error);
-        return errorResponse(res, 500, 'Error', 'Internal Server Error'+error);
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
 

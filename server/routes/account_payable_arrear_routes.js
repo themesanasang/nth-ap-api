@@ -9,6 +9,7 @@ import {
     getAccountPayableArrearAll,
     getAccountPayableArrearAllByType,
     getAccountPayableArrear,
+    getAccountPayableArrearByCode,
     updateAccountPayableArrear,
     deleteAccountPayableArrear,
     deleteAccountPayableArrearByAP
@@ -27,6 +28,7 @@ router.route('/api/v1/account_payable_arrear/:id')
 
 router.route('/api/v1/account_payable_arrear/byap/:id').delete(verifyToken, deleteAccountPayableArrearByAP)
 router.route('/api/v1/account_payable_arrear/bytype/:type').get(verifyToken, getAccountPayableArrearAllByType)
+router.route('/api/v1/account_payable_arrear/bycode/:id').get(verifyToken, getAccountPayableArrearByCode)
 router.route('/api/v1/account_payable_arrear/count/:id').get(verifyToken, getCountAccountPayableArrear)
   
 

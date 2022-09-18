@@ -151,6 +151,38 @@ const getAccountPayableArrear = async (req, res) => {
 }
 
 
+
+/**
+  * @description -This method get doc AccountPayableArrear detail
+  * @param {object} req - The request payload sent from the router
+  * @param {object} res - The response payload sent AccountPayableArrear from the controller
+  * @returns {object} - AccountPayableArrear detail
+  */
+ const getAccountPayableArrearByCode = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (!ap_code) {
+            return errorResponse(res, 400, 'AccountPayableArrear_01', 'ap_code is required', 'ap_code');
+        }
+
+        let data = await AccountPayableArrear.findOneByCode(ap_code);
+
+        if (data == '') {
+            return errorResponse(res, 404, 'AccountPayableArrear_04', 'AccountPayableArrear does not exist.');
+        }
+
+        return res.status(200).json(data);
+    } catch (error) {
+        eventLogger.error('getAccountPayableArrearByCode Req Internal Server Error: ' + error);
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
 /**
   * @description -This method updates a AccountPayableArrear's personal details
   * @param {object} req - The request payload
@@ -264,6 +296,7 @@ module.exports = {
     getAccountPayableArrearAll,
     getAccountPayableArrearAllByType,
     getAccountPayableArrear,
+    getAccountPayableArrearByCode,
     updateAccountPayableArrear,
     deleteAccountPayableArrear,
     deleteAccountPayableArrearByAP

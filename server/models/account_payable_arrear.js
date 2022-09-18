@@ -35,10 +35,13 @@ module.exports = knex => {
 
 
     const findAll = () => knex.select(
-        'ap_account_payable_arrear.*', 'ap_account_payable.ap_code'
+        'ap_account_payable_arrear.arrear_id', 'ap_account_payable_arrear.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y-%m-%d") AS arrear_date')
+        ,'ap_account_payable_arrear.amount', 'ap_account_payable_arrear.uuid_created', 'ap_account_payable_arrear.paid'
+        ,'ap_account_payable_arrear.paid_amount', 'ap_account_payable_arrear.paid_date', 'ap_account_payable_arrear.uuid_complete'
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name'
         , knex.raw('(ap_account_payable_arrear.amount - ap_account_payable_arrear.paid_amount) as arrear_balance')
-        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y")+543) AS arrear_date') 
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y")+543) AS date_arrear') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.paid_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.paid_date, "%Y")+543) AS paid_date') 
     )
     .from(tableName)
@@ -50,10 +53,13 @@ module.exports = knex => {
 
 
     const findAllByType = (type) => knex.select(
-        'ap_account_payable_arrear.*', 'ap_account_payable.ap_code'
+        'ap_account_payable_arrear.arrear_id', 'ap_account_payable_arrear.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y-%m-%d") AS arrear_date')
+        ,'ap_account_payable_arrear.amount', 'ap_account_payable_arrear.uuid_created', 'ap_account_payable_arrear.paid'
+        ,'ap_account_payable_arrear.paid_amount', 'ap_account_payable_arrear.paid_date', 'ap_account_payable_arrear.uuid_complete'
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name'
         , knex.raw('(ap_account_payable_arrear.amount - ap_account_payable_arrear.paid_amount) as arrear_balance')
-        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y")+543) AS arrear_date') 
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y")+543) AS date_arrear') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.paid_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.paid_date, "%Y")+543) AS paid_date') 
     )
     .from(tableName)
@@ -69,10 +75,13 @@ module.exports = knex => {
 
 
     const findOne = (arrear_id) => knex.select(
-        'ap_account_payable_arrear.*', 'ap_account_payable.ap_code'
+        'ap_account_payable_arrear.arrear_id', 'ap_account_payable_arrear.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y-%m-%d") AS arrear_date')
+        ,'ap_account_payable_arrear.amount', 'ap_account_payable_arrear.uuid_created', 'ap_account_payable_arrear.paid'
+        ,'ap_account_payable_arrear.paid_amount', 'ap_account_payable_arrear.paid_date', 'ap_account_payable_arrear.uuid_complete'
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name'
         , knex.raw('(ap_account_payable_arrear.amount - ap_account_payable_arrear.paid_amount) as arrear_balance')
-        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y")+543) AS arrear_date') 
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y")+543) AS date_arrear') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.paid_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.paid_date, "%Y")+543) AS paid_date') 
     )
     .from(tableName)
@@ -80,6 +89,24 @@ module.exports = knex => {
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
     .whereRaw('ap_account_payable_arrear.arrear_id = ?', [arrear_id])
+    .timeout(timeout)
+
+
+    const findOneByCode = (ap_code) => knex.select(
+        'ap_account_payable_arrear.arrear_id', 'ap_account_payable_arrear.ap_code'
+        , knex.raw('DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y-%m-%d") AS arrear_date')
+        ,'ap_account_payable_arrear.amount', 'ap_account_payable_arrear.uuid_created', 'ap_account_payable_arrear.paid'
+        ,'ap_account_payable_arrear.paid_amount', 'ap_account_payable_arrear.paid_date', 'ap_account_payable_arrear.uuid_complete'
+        , 'ap_account_payable.ap_code', 'ap_item.item_name', 'ap_department_sub.department_sub_name'
+        , knex.raw('(ap_account_payable_arrear.amount - ap_account_payable_arrear.paid_amount) as arrear_balance')
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.arrear_date, "%Y")+543) AS date_arrear') 
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_arrear.paid_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_arrear.paid_date, "%Y")+543) AS paid_date') 
+    )
+    .from(tableName)
+    .leftJoin('ap_account_payable', 'ap_account_payable.ap_code', '=', 'ap_account_payable_arrear.ap_code')
+    .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
+    .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
+    .whereRaw('ap_account_payable_arrear.ap_code = ?', [ap_code])
     .timeout(timeout)
 
 
@@ -112,6 +139,7 @@ module.exports = knex => {
         findAll,
         findAllByType,
         findOne,
+        findOneByCode,
         update,
         destroy,
         destroyByAP
