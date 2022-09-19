@@ -53,6 +53,7 @@ const postAccountPayableHistory = async (req, res) => {
         if (existingAccountPayableHIstory['numrow'] == 3) {
             let minID  = await AccountPayableHistory.findMinID(ap_code);
             await AccountPayableHistory.destroyByID(minID['account_payable_history_id']);
+            await AccountPayableHistory.destroyArrearByID(minID['account_payable_history_id']);
         }  
 
         let data = await AccountPayableHistory.create({

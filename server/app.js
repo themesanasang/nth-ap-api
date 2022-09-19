@@ -49,6 +49,7 @@ app.use('/', [
   require('./routes/account_payable_routes'),
   require('./routes/account_payable_history_routes'),
   require('./routes/account_payable_arrear_routes'),
+  require('./routes/account_payable_arrear_history_routes'),
 ])
 
 module.exports = app

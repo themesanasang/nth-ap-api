@@ -235,6 +235,10 @@ const updateAccountPayable = async (req, res) => {
             return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.'); 
         }  
 
+        let complete_date = null;
+        if (complete == 'Y') {
+            complete_date = date.format(new Date(), "YYYY-MM-DD");
+        }
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
       
         let data = await AccountPayable.updateByCode(ap_code, {
@@ -255,6 +259,7 @@ const updateAccountPayable = async (req, res) => {
             limit_day,
             comment,
             complete,
+            complete_date,
             uuid,
             updated_at
         });
@@ -292,8 +297,11 @@ const updateAccountPayable = async (req, res) => {
             return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.'); 
         }  
 
-        let complete_date = date.format(new Date(), "YYYY-MM-DD");
+        let complete_date = null;
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+        if (complete == 'Y') {
+            complete_date = date.format(new Date(), "YYYY-MM-DD");
+        }
       
         let data = await AccountPayable.updateByCode(ap_code, {
             complete,

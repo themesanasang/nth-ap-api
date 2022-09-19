@@ -190,6 +190,12 @@ module.exports = knex => {
     .timeout(timeout)
 
 
+    const destroyArrearByID = account_payable_history_id => knex.del()
+    .from('ap_account_payable_arrear_history')
+    .whereRaw('account_payable_history_id = ?', [account_payable_history_id])
+    .timeout(timeout)
+
+
 
     return {
         name, 
@@ -202,7 +208,8 @@ module.exports = knex => {
         findAllConditionTypeYear,
         findAll,
         findOne,
-        destroyByID
+        destroyByID,
+        destroyArrearByID
     }
     
 }
