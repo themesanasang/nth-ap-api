@@ -12,6 +12,7 @@ let {
 } = helpers;
 
 
+
 /**
   * @description -This method registers a AccountPayable
   * @param {object} req - The request payload
@@ -86,6 +87,80 @@ const postAccountPayable = async (req, res) => {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
+
+
+
+/**
+  * @description -This method Restore a AccountPayable
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - Restore AccountPayable code
+*/
+const postRestoreAccountPayable = async (req, res) => {
+    const { 
+        ap_code,
+        data_date,
+        payable_date,
+        round_date_start,
+        round_date_end,
+        item_id,
+        department_sub_id,
+        book_number,
+        delivery_note_number,
+        receive_amount,
+        amount,
+        bill_date,
+        pay_date,
+        payment_voucher,
+        invoice_no,
+        pay_amount,
+        limit_day,
+        comment,
+        complete,
+        complete_date,
+        uuid,
+        created_at,
+        updated_at
+    } = req.body;  
+  
+    try {
+        await AccountPayable.create({
+            ap_code,
+            data_date,
+            payable_date,
+            round_date_start,
+            round_date_end,
+            item_id,
+            department_sub_id,
+            book_number,
+            delivery_note_number,
+            receive_amount,
+            amount,
+            bill_date,
+            pay_date,
+            payment_voucher,
+            invoice_no,
+            pay_amount,
+            limit_day,
+            comment,
+            complete,
+            complete_date,
+            uuid,
+            created_at,
+            updated_at
+        });
+
+        eventLogger.info('postRestoreAccountPayable restore ap_code '+ ap_code +' to system');
+
+        return res.status(200).json(ap_code);
+    } catch (error) {
+        eventLogger.error('postRestoreAccountPayable Req Internal Server Error: ' + error);
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
+
 
 
 /**
@@ -352,6 +427,7 @@ const updateAccountPayable = async (req, res) => {
 
 module.exports = {
     postAccountPayable,
+    postRestoreAccountPayable,
     getAccountPayableAll,
     getAccountPayableCondition,
     getAccountPayableYear,

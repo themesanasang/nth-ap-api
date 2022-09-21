@@ -55,10 +55,11 @@ module.exports = knex => {
         , 'ap_account_payable_history.delivery_note_number', 'ap_account_payable_history.receive_amount', 'ap_account_payable_history.amount'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable_history.pay_date, "%Y-%m-%d") AS pay_date')
         , 'ap_account_payable_history.payment_voucher', 'ap_account_payable_history.invoice_no', 'ap_account_payable_history.pay_amount'
-        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable_history.complete'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable_history.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable_history.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
-        , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname'
+        , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.status_arrear'
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.history_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.history_date, "%Y")+543) AS date_history') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.round_date_start, "%Y")+543) AS date_round_start') 
@@ -72,6 +73,8 @@ module.exports = knex => {
     )
     .from(tableName)
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable_history.item_id')
+    .leftJoin('ap_payable_list', 'ap_payable_list.payable_list_id', '=', 'ap_item.payable_list_id')
+    .leftJoin('ap_payable_type', 'ap_payable_type.payable_type_id', '=', 'ap_payable_list.payable_type_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable_history.department_sub_id')
     .leftJoin('ap_user', 'ap_user.uuid', '=', 'ap_account_payable_history.uuid')
     .orderByRaw('ap_account_payable_history.account_payable_history_id ASC')
@@ -87,11 +90,13 @@ module.exports = knex => {
         , 'ap_account_payable_history.delivery_note_number', 'ap_account_payable_history.receive_amount', 'ap_account_payable_history.amount'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable_history.pay_date, "%Y-%m-%d") AS pay_date')
         , 'ap_account_payable_history.payment_voucher', 'ap_account_payable_history.invoice_no', 'ap_account_payable_history.pay_amount'
-        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable_history.complete'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable_history.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable_history.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
+        , 'ap_payable_type.status_arrear'
         , knex.raw('(ap_account_payable_history.amount - IF(ISNULL(ap_account_payable_history.pay_amount),0,ap_account_payable_history.pay_amount)) AS balance')
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.history_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.history_date, "%Y")+543) AS date_history') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.round_date_start, "%Y")+543) AS date_round_start') 
@@ -123,11 +128,13 @@ module.exports = knex => {
         , 'ap_account_payable_history.delivery_note_number', 'ap_account_payable_history.receive_amount', 'ap_account_payable_history.amount'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable_history.pay_date, "%Y-%m-%d") AS pay_date')
         , 'ap_account_payable_history.payment_voucher', 'ap_account_payable_history.invoice_no', 'ap_account_payable_history.pay_amount'
-        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable_history.complete'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable_history.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable_history.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
+        , 'ap_payable_type.status_arrear'
         , knex.raw('(ap_account_payable_history.amount - IF(ISNULL(ap_account_payable_history.pay_amount),0,ap_account_payable_history.pay_amount)) AS balance')
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.history_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.history_date, "%Y")+543) AS date_history') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.round_date_start, "%Y")+543) AS date_round_start') 
@@ -160,10 +167,11 @@ module.exports = knex => {
         , 'ap_account_payable_history.delivery_note_number', 'ap_account_payable_history.receive_amount', 'ap_account_payable_history.amount'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.bill_date, "%Y-%m-%d") AS bill_date'), knex.raw('DATE_FORMAT(ap_account_payable_history.pay_date, "%Y-%m-%d") AS pay_date')
         , 'ap_account_payable_history.payment_voucher', 'ap_account_payable_history.invoice_no', 'ap_account_payable_history.pay_amount'
-        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable.complete'
+        , knex.raw('DATE_FORMAT(ap_account_payable_history.limit_day, "%Y-%m-%d") AS limit_day'), 'ap_account_payable_history.comment', 'ap_account_payable_history.complete'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable_history.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable_history.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable_history.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
-        , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname'
+        , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.status_arrear'
+        , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.history_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.history_date, "%Y")+543) AS date_history') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable_history.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable_history.round_date_start, "%Y")+543) AS date_round_start') 
@@ -177,6 +185,8 @@ module.exports = knex => {
     )
     .from(tableName)
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable_history.item_id')
+    .leftJoin('ap_payable_list', 'ap_payable_list.payable_list_id', '=', 'ap_item.payable_list_id')
+    .leftJoin('ap_payable_type', 'ap_payable_type.payable_type_id', '=', 'ap_payable_list.payable_type_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable_history.department_sub_id')
     .leftJoin('ap_user', 'ap_user.uuid', '=', 'ap_account_payable_history.uuid')
     .whereRaw('ap_account_payable_history.ap_code = ?', [ap_code])

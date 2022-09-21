@@ -5,6 +5,7 @@ let router = express.Router();
 import verifyToken from '../middleware/verify_token';
 import {
     postAccountPayable,
+    postRestoreAccountPayable,
     getAccountPayableAll,
     getAccountPayableCondition,
     getAccountPayableYear,
@@ -18,6 +19,8 @@ import {
 router.route('/api/v1/account_payable')
   .get(verifyToken, getAccountPayableAll)
   .post(verifyToken, postAccountPayable)
+
+router.route('/api/v1/account_payable/restore').post(verifyToken, postRestoreAccountPayable)
 
 router.route('/api/v1/account_payable/year').get(verifyToken, getAccountPayableYear)
 router.route('/api/v1/account_payable/all/:type/:year').get(verifyToken, getAccountPayableCondition)

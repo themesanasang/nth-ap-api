@@ -134,7 +134,7 @@ const getAccountPayableArrearHistory = async (req, res) => {
             return errorResponse(res, 404, 'AccountPayableArrear_01', 'No AccountPayableArrear found', 'id'); 
         }  
 
-        await AccountPayableArrear.destroyByID2(account_payable_history_id);
+        await AccountPayableArrearHistory.destroyByID2(account_payable_history_id);
 
         eventLogger.info('deleteAccountPayableArrearHistory delete account_payable_history_id:'+ account_payable_history_id)
 

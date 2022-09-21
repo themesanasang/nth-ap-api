@@ -40,6 +40,7 @@ module.exports = knex => {
         , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname'
+        , 'ap_payable_type.status_arrear'
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable.round_date_start, "%Y")+543) AS date_round_start') 
@@ -53,6 +54,10 @@ module.exports = knex => {
     )
     .from(tableName)
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
+    .leftJoin('ap_liabilities', 'ap_liabilities.liabilities_id', '=', 'ap_item.liabilities_id')
+    .leftJoin('ap_payable_list', 'ap_payable_list.payable_list_id', '=', 'ap_item.payable_list_id')
+    .leftJoin('ap_payable', 'ap_payable.payable_id', '=', 'ap_payable_list.payable_id')
+    .leftJoin('ap_payable_type', 'ap_payable_type.payable_type_id', '=', 'ap_payable_list.payable_type_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
     .leftJoin('ap_user', 'ap_user.uuid', '=', 'ap_account_payable.uuid')
     .orderByRaw('ap_account_payable.account_payable_id ASC')
@@ -71,6 +76,7 @@ module.exports = knex => {
         , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
+        , 'ap_payable_type.status_arrear'
         , knex.raw('(ap_account_payable.amount - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 
@@ -85,7 +91,9 @@ module.exports = knex => {
     )
     .from(tableName)
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
+    .leftJoin('ap_liabilities', 'ap_liabilities.liabilities_id', '=', 'ap_item.liabilities_id')
     .leftJoin('ap_payable_list', 'ap_payable_list.payable_list_id', '=', 'ap_item.payable_list_id')
+    .leftJoin('ap_payable', 'ap_payable.payable_id', '=', 'ap_payable_list.payable_id')
     .leftJoin('ap_payable_type', 'ap_payable_type.payable_type_id', '=', 'ap_payable_list.payable_type_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
     .leftJoin('ap_user', 'ap_user.uuid', '=', 'ap_account_payable.uuid')
@@ -106,6 +114,7 @@ module.exports = knex => {
         , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
+        , 'ap_payable_type.status_arrear'
         , knex.raw('(ap_account_payable.amount - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 
@@ -120,7 +129,9 @@ module.exports = knex => {
     )
     .from(tableName)
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
+    .leftJoin('ap_liabilities', 'ap_liabilities.liabilities_id', '=', 'ap_item.liabilities_id')
     .leftJoin('ap_payable_list', 'ap_payable_list.payable_list_id', '=', 'ap_item.payable_list_id')
+    .leftJoin('ap_payable', 'ap_payable.payable_id', '=', 'ap_payable_list.payable_id')
     .leftJoin('ap_payable_type', 'ap_payable_type.payable_type_id', '=', 'ap_payable_list.payable_type_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
     .leftJoin('ap_user', 'ap_user.uuid', '=', 'ap_account_payable.uuid')
@@ -142,6 +153,7 @@ module.exports = knex => {
         , knex.raw('DATE_FORMAT(ap_account_payable.complete_date, "%Y-%m-%d") AS complete_date'), 'ap_account_payable.uuid'
         , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname'
+        , 'ap_payable_type.status_arrear'
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable.round_date_start, "%Y")+543) AS date_round_start') 
@@ -155,6 +167,10 @@ module.exports = knex => {
     )
     .from(tableName)
     .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
+    .leftJoin('ap_liabilities', 'ap_liabilities.liabilities_id', '=', 'ap_item.liabilities_id')
+    .leftJoin('ap_payable_list', 'ap_payable_list.payable_list_id', '=', 'ap_item.payable_list_id')
+    .leftJoin('ap_payable', 'ap_payable.payable_id', '=', 'ap_payable_list.payable_id')
+    .leftJoin('ap_payable_type', 'ap_payable_type.payable_type_id', '=', 'ap_payable_list.payable_type_id')
     .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
     .leftJoin('ap_user', 'ap_user.uuid', '=', 'ap_account_payable.uuid')
     .whereRaw('ap_account_payable.ap_code = ?', [ap_code])

@@ -46,6 +46,49 @@ const postAccountPayableArrear = async (req, res) => {
 }
 
 
+
+/**
+  * @description -This method Restore a AccountPayableArrear
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - Restore AccountPayableArrear code
+*/
+const postRestoreAccountPayableArrear = async (req, res) => {
+    const { 
+        ap_code,
+        arrear_date,
+        amount,
+        uuid_created,
+        paid,
+        paid_amount,
+        paid_date,
+        uuid_complete
+    } = req.body;  
+  
+    try {
+        await AccountPayableArrear.create({
+            ap_code,
+            arrear_date,
+            amount,
+            uuid_created,
+            paid,
+            paid_amount,
+            paid_date,
+            uuid_complete
+        });
+
+        eventLogger.info('postRestoreAccountPayableArrear restore ap_code '+ ap_code +' to system');
+
+        return res.status(200).json({"result":"success"});
+    } catch (error) {
+        eventLogger.error('postRestoreAccountPayableArrear Req Internal Server Error: ' + error);
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
+
+
 /**
   * @description -This method get doc AccountPayableArrear count
   * @param {object} req - The request payload sent from the router
@@ -71,6 +114,7 @@ const postAccountPayableArrear = async (req, res) => {
         return errorResponse(res, 500, 'Error', 'Internal Server Error');
     }
 }
+
 
 
 /**
@@ -292,6 +336,7 @@ const updateAccountPayableArrear = async (req, res) => {
 
 module.exports = {
     postAccountPayableArrear,
+    postRestoreAccountPayableArrear,
     getCountAccountPayableArrear,
     getAccountPayableArrearAll,
     getAccountPayableArrearAllByType,
