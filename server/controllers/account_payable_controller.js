@@ -425,6 +425,38 @@ const updateAccountPayable = async (req, res) => {
 }
 
 
+/**
+  * @description -This method get doc getRemainByItem detail
+  * @param {object} req - The request payload sent from the router
+  * @param {object} res - The response payload sent getRemainByItem from the controller
+  * @returns {object} - Remain detail
+  */
+const getRemainByItem = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+        let itemid = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (!itemid) {
+            return errorResponse(res, 400, 'AccountPayable_01', 'itemid is required', 'itemid');
+        }
+
+        let data = await AccountPayable.getRemainByItem(itemid);
+
+        if (data == '') {
+            return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable Item does not exist.');
+        }
+
+        return res.status(200).json(data);
+    } catch (error) {
+        eventLogger.error('getRemainByItem Req Internal Server Error: ' + error);
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
+
 module.exports = {
     postAccountPayable,
     postRestoreAccountPayable,
@@ -434,5 +466,6 @@ module.exports = {
     getAccountPayable,
     updateAccountPayable,
     updateAccountPayableComplete,
-    deleteAccountPayable
+    deleteAccountPayable,
+    getRemainByItem
 } 

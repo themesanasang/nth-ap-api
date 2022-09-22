@@ -12,7 +12,8 @@ import {
     getAccountPayable,
     updateAccountPayable,
     updateAccountPayableComplete,
-    deleteAccountPayable
+    deleteAccountPayable,
+    getRemainByItem
 } from '../controllers/account_payable_controller';
 
 
@@ -31,5 +32,6 @@ router.route('/api/v1/account_payable/:id')
   .delete(verifyToken, deleteAccountPayable)
 
 router.route('/api/v1/account_payable/complete/:id').put(verifyToken, updateAccountPayableComplete)
+router.route('/api/v1/account_payable/remain/item/:id').get(verifyToken, getRemainByItem)
 
 module.exports = router;

@@ -77,7 +77,7 @@ module.exports = knex => {
         , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
         , 'ap_payable_type.status_arrear'
-        , knex.raw('(ap_account_payable.amount - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
+        , knex.raw('((IF(ISNULL(ap_account_payable.receive_amount),0,ap_account_payable.receive_amount)+IF(ISNULL(ap_account_payable.amount),0,ap_account_payable.amount)) - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable.round_date_start, "%Y")+543) AS date_round_start') 
@@ -115,7 +115,7 @@ module.exports = knex => {
         , knex.raw('DATE_FORMAT(ap_account_payable.created_at, "%Y-%m-%d %H-%i-%s") AS created_at'), knex.raw('DATE_FORMAT(ap_account_payable.updated_at, "%Y-%m-%d %H-%i-%s") AS updated_at')
         , 'ap_item.item_name', 'ap_department_sub.department_sub_name', 'ap_user.fullname', 'ap_payable_type.payable_type_name'
         , 'ap_payable_type.status_arrear'
-        , knex.raw('(ap_account_payable.amount - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
+        , knex.raw('((IF(ISNULL(ap_account_payable.receive_amount),0,ap_account_payable.receive_amount)+IF(ISNULL(ap_account_payable.amount),0,ap_account_payable.amount)) - IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)) AS balance')
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.data_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.data_date, "%Y")+543) AS date_data') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS date_payable') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.round_date_start, "%d-%m-"),DATE_FORMAT(ap_account_payable.round_date_start, "%Y")+543) AS date_round_start') 
@@ -191,6 +191,18 @@ module.exports = knex => {
     .timeout(timeout)
 
 
+    const getRemainByItem = (itemid) => knex.select(
+        knex.raw('ABS(IF(ISNULL(ap_account_payable.pay_amount),0,ap_account_payable.pay_amount)-IF((ap_account_payable.receive_amount > 0),(ap_account_payable.receive_amount+ap_account_payable.amount), ap_account_payable.amount)) AS remain')    
+    )
+    .from(tableName)
+    .leftJoin('ap_item', 'ap_item.item_id', '=', 'ap_account_payable.item_id')
+    .whereRaw('ap_account_payable.item_id = ?', [itemid])
+    .orderByRaw('ap_account_payable.account_payable_id DESC')
+    .limit(1)
+    .timeout(timeout)
+
+
+
     return {
         name, 
         create,
@@ -201,7 +213,8 @@ module.exports = knex => {
         findAll,
         findOne,
         updateByCode,
-        destroyByCode
+        destroyByCode,
+        getRemainByItem
     }
     
 }
