@@ -8,13 +8,18 @@ import {
     getAccountGFAll,
     getAccountGF,
     updateAccountGF,
-    deleteAccountGF
+    deleteAccountGF,
+    getUseGF
 } from '../controllers/account_gf_controller';
 
 
 router.route('/api/v1/account_gf')
   .get(verifyToken, getAccountGFAll)
   .post(verifyToken, postAccountGF)
+
+
+router.route('/api/v1/account_gf/usegf').get(verifyToken, getUseGF)
+
 
 router.route('/api/v1/account_gf/:id')
   .get(verifyToken, getAccountGF)

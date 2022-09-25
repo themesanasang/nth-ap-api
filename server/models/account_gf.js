@@ -58,6 +58,17 @@ module.exports = knex => {
     .whereRaw('gf_id = ?', [gf_id])
     .timeout(timeout)
 
+
+    const getUseGF = () => knex.select(
+        'ap_account_gf.gf_id', 'ap_account_gf.gf_name'    
+    )
+    .from('ap_payable_type')
+    .leftJoin('ap_account', 'ap_account.account_id', '=', 'ap_payable_type.account_id')
+    .leftJoin('ap_account_gf', 'ap_account_gf.gf_id', '=', 'ap_account.gf_id')
+    .groupByRaw('ap_account_gf.gf_id')
+    .orderByRaw('ap_account_gf.gf_id ASC')
+    .timeout(timeout)
+
     return {
         name, 
         create,
@@ -68,7 +79,8 @@ module.exports = knex => {
         findOne,
         countWork,
         update,
-        destroy
+        destroy,
+        getUseGF
     }
     
 }

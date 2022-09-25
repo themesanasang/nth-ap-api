@@ -29,6 +29,8 @@ module.exports = knex => {
     const findAll = () => knex.select(
         'item_id', 'ap_item.payable_list_id', 'ap_item.liabilities_id', 'ap_item.item_name', 'ap_item.status'
         , 'ap_liabilities.liabilities_name', 'ap_payable.name'
+        , knex.raw('(SELECT name FROM ap_payable WHERE ap_payable.payable_id=ap_payable_list.payable_id) AS ap_payable_name')
+        , knex.raw('(SELECT payable_type_name FROM ap_payable_type WHERE ap_payable_type.payable_type_id=ap_payable_list.payable_type_id) AS payable_type_name')
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.created_at, "%d-%m-"),DATE_FORMAT(ap_item.created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.updated_at, "%d-%m-"),DATE_FORMAT(ap_item.updated_at, "%Y")+543) AS date_update') 
     )
@@ -42,6 +44,8 @@ module.exports = knex => {
     const findOne = (item_id) => knex.select(
         'item_id', 'ap_item.payable_list_id', 'ap_item.liabilities_id', 'ap_item.item_name', 'ap_item.status'
         , 'ap_liabilities.liabilities_name', 'ap_payable.name', 'ap_payable_type.status_arrear'
+        , knex.raw('(SELECT name FROM ap_payable WHERE ap_payable.payable_id=ap_payable_list.payable_id) AS ap_payable_name')
+        , knex.raw('(SELECT payable_type_name FROM ap_payable_type WHERE ap_payable_type.payable_type_id=ap_payable_list.payable_type_id) AS payable_type_name')
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.created_at, "%d-%m-"),DATE_FORMAT(ap_item.created_at, "%Y")+543) AS date_create') 
         , knex.raw('CONCAT(DATE_FORMAT(ap_item.updated_at, "%d-%m-"),DATE_FORMAT(ap_item.updated_at, "%Y")+543) AS date_update') 
     )
