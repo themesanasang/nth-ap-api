@@ -200,11 +200,39 @@ const updateAccountGF = async (req, res) => {
 }
 
 
+/**
+  * @description -This method returns detail of AccountGF use all
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload sent back from the method
+  * @returns {object} - AccountGF use all
+  */
+ const getListNameGF = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+        let gf_id = bytes.toString(CryptoJS.enc.Utf8);
+
+        let data = await AccountGF.getListNameGF(gf_id);
+
+        if (!data) {
+            return errorResponse(res, 404, 'AccountGF_04', 'AccountGF does not exist.');
+        }
+
+        return res.status(200).json(data);
+    } catch (error) {
+        eventLogger.error('getListNameGF Req Internal Server Error: ' + error);
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+
 module.exports = {
     postAccountGF,
     getAccountGFAll,
     getAccountGF,
     updateAccountGF,
     deleteAccountGF,
-    getUseGF
+    getUseGF,
+    getListNameGF
 } 

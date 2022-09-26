@@ -9,7 +9,8 @@ import {
     getAccountGF,
     updateAccountGF,
     deleteAccountGF,
-    getUseGF
+    getUseGF,
+    getListNameGF
 } from '../controllers/account_gf_controller';
 
 
@@ -25,6 +26,9 @@ router.route('/api/v1/account_gf/:id')
   .get(verifyToken, getAccountGF)
   .put(verifyToken, updateAccountGF)
   .delete(verifyToken, deleteAccountGF)
+
+
+router.route('/api/v1/account_gf/listname/:id').get(verifyToken, getListNameGF)
 
 
 module.exports = router;

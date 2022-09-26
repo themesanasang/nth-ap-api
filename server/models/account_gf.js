@@ -69,6 +69,14 @@ module.exports = knex => {
     .orderByRaw('ap_account_gf.gf_id ASC')
     .timeout(timeout)
 
+    const getListNameGF = (gf) => knex.select(
+        'ap_account_gf.gf_code', 'ap_account_gf.gf_name'    
+    )
+    .from('ap_account_gf')
+    .whereRaw('ap_account_gf.gf_id in ('+gf+')')
+    .orderByRaw('ap_account_gf.gf_id ASC')
+    .timeout(timeout)
+
     return {
         name, 
         create,
@@ -80,7 +88,8 @@ module.exports = knex => {
         countWork,
         update,
         destroy,
-        getUseGF
+        getUseGF,
+        getListNameGF
     }
     
 }

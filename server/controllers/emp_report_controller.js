@@ -20,6 +20,7 @@ let {
 const postEmpEmpReport = async (req, res) => {
     const { 
         name,
+        type,
         title1,
         title2,
         title3,
@@ -35,6 +36,7 @@ const postEmpEmpReport = async (req, res) => {
        
         let data = await EmpReport.create({
             name,
+            type,
             title1,
             title2,
             title3,
@@ -120,6 +122,7 @@ const updateEmpReport = async (req, res) => {
   
         let { 
             name,
+            type,
             title1,
             title2,
             title3,
@@ -134,6 +137,7 @@ const updateEmpReport = async (req, res) => {
       
         let data = await EmpReport.update(idemp, {
             name,
+            type,
             title1,
             title2,
             title3,
