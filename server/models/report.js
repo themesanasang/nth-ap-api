@@ -26,10 +26,11 @@ module.exports = knex => {
 
     const reportPayableType = (type, dateStart, dateEnd) => knex.select(
         knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.payable_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.payable_date, "%Y")+543) AS payable_date') 
-        , 'ap_payable.name', 'ap_account_payable.delivery_note_number', 'ap_account_payable.amount'
+        , 'ap_payable.name', 'ap_item.item_name', 'ap_account_payable.receive_amount', 'ap_account_payable.delivery_note_number', 'ap_account_payable.amount'
+        , 'ap_department_sub.department_sub_name', 'ap_account_payable.invoice_no'
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.bill_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.bill_date, "%Y")+543) AS bill_date')
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.pay_date, "%d-%m-"),DATE_FORMAT(ap_account_payable.pay_date, "%Y")+543) AS pay_date') 
-        , 'ap_account_payable.payment_voucher' 
+        , 'ap_account_payable.payment_voucher', 'ap_account_payable.pay_amount' 
         , knex.raw('CONCAT(DATE_FORMAT(ap_account_payable.limit_day, "%d-%m-"),DATE_FORMAT(ap_account_payable.limit_day, "%Y")+543) AS limit_day') 
     )
     .from('ap_account_payable')
@@ -37,6 +38,7 @@ module.exports = knex => {
     .leftJoin('ap_payable_list', 'ap_payable_list.payable_list_id', '=', 'ap_item.payable_list_id')
     .leftJoin('ap_payable_type', 'ap_payable_type.payable_type_id', '=', 'ap_payable_list.payable_type_id')
     .leftJoin('ap_payable', 'ap_payable.payable_id', '=', 'ap_payable_list.payable_id')
+    .leftJoin('ap_department_sub', 'ap_department_sub.department_sub_id', '=', 'ap_account_payable.department_sub_id')
     .whereRaw('ap_payable_type.payable_type_id in ('+type+')')
     .whereRaw('ap_account_payable.payable_date between "'+dateStart+'" and "'+dateEnd+'"')
     .orderByRaw('ap_account_payable.payable_date ASC')
