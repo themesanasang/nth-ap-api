@@ -12,7 +12,7 @@ export default {
     return match;
   },
   createToken(user) {
-    return jwt.sign({ uuid: user.uuid, username: user.username }, process.env.JWT_ENCRYPTION, { expiresIn: process.env.JWT_EXPIRATION });
+    return jwt.sign({ uuid: user.uuid, username: user.username, level: user.level }, process.env.JWT_ENCRYPTION, { expiresIn: process.env.JWT_EXPIRATION });
   },
   errorResponse(res, status, code, message, field) {
     return res.status(status).json({
