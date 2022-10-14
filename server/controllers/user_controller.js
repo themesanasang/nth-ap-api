@@ -232,7 +232,7 @@ const postUserSocial = async (req, res) => {
       updated_at
     });
 
-    eventLogger.info('postUser register '+ username +' by social to system');
+    eventLogger.info('postUser register '+ uuid +' by social to system');
 
     return res.status(200).json(user);
   } catch (error) {

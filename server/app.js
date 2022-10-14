@@ -26,11 +26,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/', function (req, res) {
+app.get('/ap/', function (req, res) {
   res.send('Web Api NTH-AP By ThemeSanasang. V.1')
 });
 
-app.use('/', [
+app.use('/ap/', [
   require('./routes/user_routes'),
   require('./routes/department_routes'),
   require('./routes/department_sub_routes'),
