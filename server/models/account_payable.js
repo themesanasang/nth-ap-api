@@ -25,6 +25,7 @@ module.exports = knex => {
     )
     .from(tableName)
     .orderByRaw('YEAR(payable_date) DESC')
+    .groupByRaw('YEAR(payable_date)')
     .timeout(timeout)
 
 
