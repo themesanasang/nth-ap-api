@@ -290,18 +290,69 @@ const updateAccountPayable = async (req, res) => {
             item_id,
             department_sub_id,
             book_number,
-            delivery_note_number,
             receive_amount,
             amount,
+            invoice_no,
+            limit_day,
+            complete,
+            uuid,
+        } = req.body;  
+  
+        let existingAccountPayable =  await AccountPayable.countByCode(ap_code);
+
+        if (existingAccountPayable['numrow'] == 0) {
+            return errorResponse(res, 404, 'AccountPayable_04', 'AccountPayable does not exist.'); 
+        }  
+
+        let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+      
+        let data = await AccountPayable.updateByCode(ap_code, {
+            payable_date,
+            round_date_start,
+            round_date_end,
+            item_id,
+            department_sub_id,
+            book_number,
+            receive_amount,
+            amount,
+            invoice_no,
+            limit_day,
+            complete,
+            uuid,
+            updated_at
+        });
+
+        eventLogger.info('updateAccountPayable update detail ap_code:'+ ap_code);
+  
+        return res.status(200).json(data); 
+    } catch (error) {
+        eventLogger.error('updateAccountPayable Req Internal Server Error: ' + error);
+        return errorResponse(res, 500, 'Error', 'Internal Server Error');
+    }
+}
+
+/**
+  * @description -This method updates a AccountPayable Pay's personal details
+  * @param {object} req - The request payload
+  * @param {object} res - The response payload
+  * @returns {object} - AccountPayable Pay
+  */
+const updateAccountPayablePay = async (req, res) => {
+    try {
+        const { id } = req.params;
+  
+        let bytes = CryptoJS.AES.decrypt(id, process.env.secretKey);
+        let ap_code = bytes.toString(CryptoJS.enc.Utf8);
+  
+        let { 
+            delivery_note_number,
             bill_date,
             pay_date,
             payment_voucher,
-            invoice_no,
             pay_amount,
-            limit_day,
             comment,
             complete,
-            uuid,
+            uuid_pay,
         } = req.body;  
   
         let existingAccountPayable =  await AccountPayable.countByCode(ap_code);
@@ -314,28 +365,21 @@ const updateAccountPayable = async (req, res) => {
         if (complete == 'Y') {
             complete_date = date.format(new Date(), "YYYY-MM-DD");
         }
+
+        let pay_created_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
         let updated_at = date.format(new Date(), "YYYY-MM-DD HH:mm:ss");
       
         let data = await AccountPayable.updateByCode(ap_code, {
-            payable_date,
-            round_date_start,
-            round_date_end,
-            item_id,
-            department_sub_id,
-            book_number,
             delivery_note_number,
-            receive_amount,
-            amount,
             bill_date,
             pay_date,
             payment_voucher,
-            invoice_no,
             pay_amount,
-            limit_day,
             comment,
             complete,
             complete_date,
-            uuid,
+            uuid_pay,
+            pay_created_at,
             updated_at
         });
 
@@ -465,6 +509,7 @@ module.exports = {
     getAccountPayableYear,
     getAccountPayable,
     updateAccountPayable,
+    updateAccountPayablePay,
     updateAccountPayableComplete,
     deleteAccountPayable,
     getRemainByItem
